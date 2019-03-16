@@ -3,36 +3,16 @@
                     xmlns:local="clr-namespace:OrderManadger"
                     xmlns:conv="clr-namespace:OrderManadger.Converters" x:Class="Empty.cs">
     <conv:StatusToBrushConverter x:Key="StatusToBrush"/>
+    <conv:StatusAdapter x:Key="Adapter"/>
+    <conv:TextLenghtToVisibility x:Key="TextVisibility"/>
     <DataTemplate x:Key="OrdersTemplate">
         <ListBox ItemsSource="{Binding}" IsSynchronizedWithCurrentItem="True">
             <ListBox.ItemTemplate>
                 <ItemContainerTemplate>
                     <StackPanel Orientation="Horizontal" Height="23">
-                        <ComboBox Width="80" SelectedIndex="0">
-                            <ComboBoxItem>Сделать</ComboBoxItem>
-                            <ComboBoxItem>В обработке</ComboBoxItem>
-                            <ComboBoxItem>Завершено</ComboBoxItem>
-                        </ComboBox>
-                        <local:TextBoxDropDownHintControl CurrentText="{Binding Seller}" ItemsSource="{Binding Sellers}" Background="Transparent" Width="80"/>
+                        <ComboBox IsEditable="True" Width="100" Text="{Binding Seller}" ItemsSource="{Binding Sellers}" Background="Transparent"/>
                         <TextBox Text="{Binding Count}" Background="Transparent" Width="50"/>
-                        <local:TextBoxDropDownHintControl CurrentText="{Binding Position}" ItemsSource="{Binding Assortment}" Background="Transparent" Width="80"/>
-                        <DatePicker>
-                            <DatePicker.Resources>
-                                <Style TargetType="ContentControl">
-                                    <Style.Triggers>
-                                        <Trigger Property="Name" Value="PART_Watermark">
-                                            <Setter Property="ContentControl.Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate>
-                                                        <TextBlock Text=""/>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DatePicker.Resources>
-                        </DatePicker>
+                        <ComboBox IsEditable="True" Width="100" Text="{Binding Position}" ItemsSource="{Binding Assortment}"  Background="Transparent"/>
                     </StackPanel>
                 </ItemContainerTemplate>
             </ListBox.ItemTemplate>

@@ -9,27 +9,57 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
-        <ResourceDictionary Source="MainDictionary.xaml"/>   
+        <ResourceDictionary Source="MainDictionary.xaml"/>
     </Window.Resources>
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
     <StackPanel>
         <StackPanel>
-            <Button Content="Добавить заказ" Command="{Binding AddOrderCommand}" Width="100" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal">
+                <ComboBox Width="85" SelectedIndex="{Binding CurrentStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
+                    <ComboBoxItem>Сделать</ComboBoxItem>
+                    <ComboBoxItem>В обработке</ComboBoxItem>
+                    <ComboBoxItem>Завершено</ComboBoxItem>
+                </ComboBox>
+                <Button Margin="2,0,0,0" Content="Добавить заказ" Command="{Binding AddOrderCommand}" Width="100"/>
+                <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" Margin="2,0,0,0" >
+                    <DatePicker.Resources>
+                        <Style TargetType="ContentControl">
+                            <Style.Triggers>
+                                <Trigger Property="Name" Value="PART_Watermark">
+                                    <Setter Property="ContentControl.Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <TextBlock Text=""/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DatePicker.Resources>
+                </DatePicker>
+                <Button Margin="2,0,0,0" Content="Добавить запись" Width="100" Command="{Binding NewEntryCommand}"/>
+            </StackPanel>
             <ContentPresenter Content="{Binding NewOrderList}" ContentTemplate="{StaticResource OrdersTemplate}"/>
-            <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True"/>
+            <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Text="{Binding Comment, Mode=TwoWay}"/>
         </StackPanel>
-        <ListBox ItemsSource="{Binding Base}">
+        <ListBox Name="MainBase" ItemsSource="{Binding Base}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <ItemContainerTemplate>
-                    <StackPanel Background="{Binding status, Converter={StaticResource StatusToBrush}, Mode=OneWay}">
-                        <TextBlock Text="{Binding Orders}"/>
-                        <TextBlock Text="{Binding Comment}"/>
-                        <TextBlock Text="{Binding Date}"/>
+                    <StackPanel Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Background="{Binding status, Converter={StaticResource StatusToBrush}, Mode=OneWay}">
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Orders, Converter={StaticResource TextVisibility}}"/>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Comment, Converter={StaticResource TextVisibility}}"/>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </ItemContainerTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Удалить запись" Command="{Binding DeleteEntryCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}, Path=PlacementTarget.SelectedItem}"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
     </StackPanel>
 </Window>

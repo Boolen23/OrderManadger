@@ -71,15 +71,12 @@ namespace OrderManadger.ViewModel
             }
         }
 
-        private Status _CurrentStatus;
-        public Status CurrentStatus
+
+        public Order GetOrder()
         {
-            get => _CurrentStatus;
-            set
-            {
-                _CurrentStatus = value;
-                OnPropertyChanged();
-            }
+            if (Seller == null && Count == null && Position == null) return null;
+            Order order = new Order() { Seller = this.Seller, Article = Position, Count = this.Count };
+            return order;
         }
     }
 }

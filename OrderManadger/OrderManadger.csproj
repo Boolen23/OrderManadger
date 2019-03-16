@@ -56,11 +56,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Converters\StatusAdapter.cs" />
     <Compile Include="Converters\StatusToBrushConverter.cs" />
+    <Compile Include="Converters\TextLenghtToVisibility.cs" />
     <Compile Include="Model\Status.cs" />
-    <Compile Include="TextBoxDropDownHintControl.xaml.cs">
-      <DependentUpon>TextBoxDropDownHintControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModel\BindableBase.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\OrderViewModel.cs" />
@@ -80,10 +79,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="TextBoxDropDownHintControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Entry.cs" />
