@@ -113,6 +113,14 @@ namespace OrderManadger.ViewModel
             Base.Remove((Entry)entryObject);
         }
 
+        private ICommand _UpdateEntryCommand;
+        public ICommand UpdateEntryCommand => _UpdateEntryCommand ?? (_UpdateEntryCommand = new RelayCommand(OnUpdateEntryCommand));
+        private void OnUpdateEntryCommand(object entryObject)
+        {
+            Entry current = (Entry)entryObject;
+        }
+
+
 
     }
 }
