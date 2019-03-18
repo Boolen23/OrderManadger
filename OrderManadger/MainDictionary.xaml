@@ -1,18 +1,19 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:OrderManadger"
-                    xmlns:conv="clr-namespace:OrderManadger.Converters" x:Class="Empty.cs">
+                    xmlns:conv="clr-namespace:OrderManadger.Converters">
     <conv:StatusToBrushConverter x:Key="StatusToBrush"/>
     <conv:StatusAdapter x:Key="Adapter"/>
     <conv:TextLenghtToVisibility x:Key="TextVisibility"/>
+    <conv:EntryToButtonText x:Key="EntryToText"/>
     <DataTemplate x:Key="OrdersTemplate">
         <ListBox ItemsSource="{Binding}" IsSynchronizedWithCurrentItem="True">
             <ListBox.ItemTemplate>
                 <ItemContainerTemplate>
                     <StackPanel Orientation="Horizontal" Height="23">
-                        <ComboBox IsEditable="True" Width="100" Text="{Binding Seller}" ItemsSource="{Binding Sellers}" Background="Transparent"/>
-                        <TextBox Text="{Binding Count}" Background="Transparent" Width="50"/>
-                        <ComboBox IsEditable="True" Width="100" Text="{Binding Position}" ItemsSource="{Binding Assortment}"  Background="Transparent"/>
+                        <ComboBox IsEditable="True" Width="100" Text="{Binding Seller}" ItemsSource="{Binding Sellers}"/>
+                        <TextBox Text="{Binding Count}" Width="50"/>
+                        <ComboBox IsEditable="True" Width="100" Text="{Binding Position}" ItemsSource="{Binding Assortment}"/>
                     </StackPanel>
                 </ItemContainerTemplate>
             </ListBox.ItemTemplate>

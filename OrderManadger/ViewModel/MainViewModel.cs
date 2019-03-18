@@ -15,11 +15,9 @@ namespace OrderManadger.ViewModel
         public MainViewModel()
         {
             Base = new ObservableCollection<Entry>();
-            NewOrderList = new ObservableCollection<OrderViewModel>();
             Sellers = new List<string>() { "1", "2", "3", "11" };
             Assortment = new List<string>() { "a", "b", "c", "d" };
-            CurrentStatus = Status.Make;
-            Date = DateTime.Now;
+            ResetEntry();
         }
         private List<string> Sellers;
         private List<string> Assortment;
@@ -63,6 +61,16 @@ namespace OrderManadger.ViewModel
                 OnPropertyChanged();
             }
         }
+        private Entry _EntryToUpdate;
+        public Entry EntryToUpdate
+        {
+            get => _EntryToUpdate;
+            set
+            {
+                _EntryToUpdate = value;
+                OnPropertyChanged();
+            }
+        }
 
         private Status _CurrentStatus;
         public Status CurrentStatus
@@ -86,6 +94,7 @@ namespace OrderManadger.ViewModel
         public ICommand NewEntryCommand => _NewEntryCommand ?? (_NewEntryCommand = new RelayCommand(OnNewEntryAdded));
         private void OnNewEntryAdded(object o)
         {
+            if (EntryToUpdate != null) Base.Remove(EntryToUpdate);
             List<Order> orders = new List<Order>();
             foreach (var i in NewOrderList)
             {
@@ -98,11 +107,8 @@ namespace OrderManadger.ViewModel
                 if (Assortment.Count != NewOrderList[0].Assortment.Count) Assortment = new List<string>(NewOrderList[0].Assortment);
             }
 
-            NewOrderList.Clear();
             Entry entry = new Entry(Date, orders, Comment, CurrentStatus);
-            Date = DateTime.Now;
-            Comment = null;
-
+            ResetEntry();
             Base.Add(entry);
         }
 
@@ -118,7 +124,28 @@ namespace OrderManadger.ViewModel
         private void OnUpdateEntryCommand(object entryObject)
         {
             Entry current = (Entry)entryObject;
+            EntryToUpdate = current;
+            Date = current.Datetime;
+            Comment = current.Comment;
+            CurrentStatus = current.status;
+            NewOrderList = new ObservableCollection<OrderViewModel>();
+            foreach (Order ordr in current.OrderList)
+                NewOrderList.Add(new OrderViewModel(ordr, Sellers, Assortment));
         }
+        private void ResetEntry()
+        {
+            CurrentStatus = Status.Make;
+            EntryToUpdate = null;
+            NewOrderList = new ObservableCollection<OrderViewModel>();
+            NewOrderList.Add(new OrderViewModel(Sellers, Assortment));
+            Comment = null;
+            Date = DateTime.Now;
+        }
+
+        private ICommand _ResetEntryCommand;
+        public ICommand ResetEntryCommand => _ResetEntryCommand ?? (_ResetEntryCommand = new RelayCommand(OnResetEntryCommand));
+        private void OnResetEntryCommand(object entryObject) => ResetEntry();
+
 
 
 

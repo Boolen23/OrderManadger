@@ -16,8 +16,8 @@ namespace OrderManadger.Model
             Comment = comment;
             status = _status;
         }
-        private List<Order> OrderList;
-        private DateTime Datetime;
+        public List<Order> OrderList;
+        public DateTime Datetime;
         public Status status { get; set; }
         public string Comment { get; set; }
         public string Orders { get => string.Join(Environment.NewLine, OrderList); }

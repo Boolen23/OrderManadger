@@ -15,7 +15,16 @@ namespace OrderManadger.ViewModel
             Sellers = new ObservableCollection<string>(seller);
             Assortment = new ObservableCollection<string>(assortment);
         }
-        
+        public OrderViewModel(Order OrderToUpdate, List<string> seller, List<string> assortment)
+        {
+            this.Count = OrderToUpdate.Count;
+            this.Position = OrderToUpdate.Article;
+            this.Seller = OrderToUpdate.Seller;
+            Sellers = new ObservableCollection<string>(seller);
+            Assortment = new ObservableCollection<string>(assortment);
+        }
+
+
         private ObservableCollection<string> _Sellers;
         public ObservableCollection<string> Sellers
         {
