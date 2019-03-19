@@ -17,6 +17,7 @@ namespace OrderManadger.Model
             Comment = comment;
             status = _status;
         }
+        public int id;
         public List<Order> OrderList;
         public DateTime Datetime;
         public Status status { get; set; }

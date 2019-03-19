@@ -67,6 +67,8 @@
     <Compile Include="Converters\StatusAdapter.cs" />
     <Compile Include="Converters\StatusToBrushConverter.cs" />
     <Compile Include="Converters\TextLenghtToVisibility.cs" />
+    <Compile Include="Model\DataBase\DataBase.cs" />
+    <Compile Include="Model\DataBase\DataBaseEventArgs.cs" />
     <Compile Include="Model\Status.cs" />
     <Compile Include="ViewModel\BindableBase.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
