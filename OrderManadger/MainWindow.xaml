@@ -68,6 +68,7 @@
                     </Button.Template>
                 </Button>
                 <Button Margin="2,0,0,0" Content="{Binding EntryToUpdate, Converter={StaticResource EntryToText}}"  Width="100" Command="{Binding NewEntryCommand}"/>
+                <Button Command="{Binding SaveCommand}" Width="200" Content="save"/>
             </StackPanel>
             <ContentPresenter Content="{Binding NewOrderList}" ContentTemplate="{StaticResource OrdersTemplate}"/>
             <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Text="{Binding Comment, Mode=TwoWay}"/>

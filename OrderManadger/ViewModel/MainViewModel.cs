@@ -14,11 +14,18 @@ namespace OrderManadger.ViewModel
     {
         public MainViewModel()
         {
-            Base = new ObservableCollection<Entry>();
-            Sellers = new List<string>() { "1", "2", "3", "11" };
-            Assortment = new List<string>() { "a", "b", "c", "d" };
+            Base = XML.LoadEntries();
+            Base.CollectionChanged += Base_CollectionChanged;
+            Sellers = XML.LoadSellers();
+            Assortment = XML.LoadAssortment();
             ResetEntry();
         }
+
+        private void Base_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            XML.Save(Base, Sellers, Assortment);
+        }
+
         private List<string> Sellers;
         private List<string> Assortment;
         private ObservableCollection<Entry> _Base;
@@ -146,8 +153,11 @@ namespace OrderManadger.ViewModel
         public ICommand ResetEntryCommand => _ResetEntryCommand ?? (_ResetEntryCommand = new RelayCommand(OnResetEntryCommand));
         private void OnResetEntryCommand(object entryObject) => ResetEntry();
 
-
-
-
+        private ICommand _SaveCommand;
+        public ICommand SaveCommand => _SaveCommand ?? (_SaveCommand = new RelayCommand(OnSaveCommand));
+        private void OnSaveCommand(object entryObject)
+        {
+            XML.Save(Base, Sellers, Assortment);
+        }
     }
 }

@@ -84,6 +84,8 @@ namespace OrderManadger.ViewModel
         public Order GetOrder()
         {
             if (Seller == null && Count == null && Position == null) return null;
+            if (!Sellers.Contains(Seller)) Sellers.Add(Seller);
+            if (!Assortment.Contains(Position)) Assortment.Add(Position);
             Order order = new Order() { Seller = this.Seller, Article = Position, Count = this.Count };
             return order;
         }

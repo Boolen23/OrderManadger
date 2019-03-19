@@ -9,6 +9,7 @@ namespace OrderManadger.Model
     [Serializable]
     public class Entry
     {
+        public Entry() { }
         public Entry(DateTime date, List<Order> _orderList, string comment, Status _status)
         {
             Datetime = date;

@@ -11,13 +11,49 @@ namespace OrderManadger.Model
 {
     public static class XML
     {
-        private static XmlSerializer formatter = new XmlSerializer(typeof(ObservableCollection<Entry>));
-        public static void Save(ObservableCollection<Entry> entries)
+        private static XmlSerializer EntryFormatter = new XmlSerializer(typeof(ObservableCollection<Entry>));
+        private static XmlSerializer OptionallyFormatter = new XmlSerializer(typeof(List<string>));
+
+        public static void Save(ObservableCollection<Entry> entries, List<string> seller, List<string> assortment)
         {
             using (FileStream fs = new FileStream("base.xml", FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fs, entries);
+                EntryFormatter.Serialize(fs, entries);
+            }
+            using (FileStream fs = new FileStream("Sellers.xml", FileMode.OpenOrCreate))
+            {
+                OptionallyFormatter.Serialize(fs, seller);
+            }
+            using (FileStream fs = new FileStream("Assortment.xml", FileMode.OpenOrCreate))
+            {
+                OptionallyFormatter.Serialize(fs, assortment);
             }
         }
+        public static ObservableCollection<Entry> LoadEntries()
+        {
+            if (!File.Exists("base.xml")) return new ObservableCollection<Entry>();
+            using (FileStream fs = new FileStream("base.xml", FileMode.Open))
+            {
+                return (ObservableCollection<Entry>)EntryFormatter.Deserialize(fs);
+            }
+        }
+        public static List<string> LoadSellers()
+        {
+            if (!File.Exists("Sellers.xml")) return new List<string>();
+            using (FileStream fs = new FileStream("Sellers.xml", FileMode.Open))
+            {
+                return (List<string>)OptionallyFormatter.Deserialize(fs);
+            }
+        }
+        public static List<string> LoadAssortment()
+        {
+            if (!File.Exists("Assortment.xml")) return new List<string>();
+            using (FileStream fs = new FileStream("Assortment.xml", FileMode.Open))
+            {
+                return (List<string>)OptionallyFormatter.Deserialize(fs);
+            }
+        }
+
+
     }
 }
