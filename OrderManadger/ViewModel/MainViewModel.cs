@@ -1,5 +1,6 @@
 ﻿using OrderManadger.Commands;
 using OrderManadger.Model;
+using OrderManadger.Model.DataBase;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,11 +15,20 @@ namespace OrderManadger.ViewModel
     {
         public MainViewModel()
         {
-            Base = XML.LoadEntries();
-            Base.CollectionChanged += Base_CollectionChanged;
-            Sellers = XML.LoadSellers();
-            Assortment = XML.LoadAssortment();
+            Base = new ObservableCollection<Entry>();
+            DataBase SqlDataBase = new DataBase();
+            SqlDataBase.StatusChanged += SqlDataBase_StatusChanged;
+            //Base.CollectionChanged += Base_CollectionChanged;
+            //Sellers = XML.LoadSellers();
+            //Assortment = XML.LoadAssortment();
+            Sellers = new List<string>();
+            Assortment = new List<string>();
             ResetEntry();
+        }
+
+        private void SqlDataBase_StatusChanged(object sender, DataBaseEventArgs e)
+        {
+            BaseComment = e.DataBaseStatus;
         }
 
         private void Base_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -78,6 +88,18 @@ namespace OrderManadger.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        private string _BaseComment;
+        public string BaseComment
+        {
+            get => _BaseComment;
+            set
+            {
+                _BaseComment = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private Status _CurrentStatus;
         public Status CurrentStatus

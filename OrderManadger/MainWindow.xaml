@@ -94,5 +94,6 @@
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
+        <TextBlock Text="{Binding BaseComment}" TextWrapping="Wrap"/>
     </StackPanel>
 </Window>

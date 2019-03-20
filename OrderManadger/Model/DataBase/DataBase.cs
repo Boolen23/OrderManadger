@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace OrderManadger.Model.DataBase
 {
-    public partial class DataBase
+    public class DataBase
     {
         public DataBase()
         {
-
+            FirstStart();
         }
-        public event EventHandler<DataBaseEventArgs> StatusChanged; 
+        public event EventHandler<DataBaseEventArgs> StatusChanged;
         string connStr = @"Data Source=(local)\SQLEXPRESS; Initial Catalog=Base; Integrated Security=True";
-        SqlConnection conn;
+        private SqlConnection conn;
         public async Task<bool> TryConnectAsync(string connect)
         {
             conn = new SqlConnection(connect);
@@ -32,9 +32,16 @@ namespace OrderManadger.Model.DataBase
         private async void FirstStart()
         {
             Status = "Попытка подключения...";
-            if(await TryConnectAsync(connStr))
+            if (await TryConnectAsync(connStr))
             {
                 Status = "Подключение установлено";
+            }
+            else
+            {
+                Status = "База данных не найдена или повреждена." + Environment.NewLine + "Создание базы данных...";
+                await CreateBase();
+                await CreateTables();
+                Status = "База данных создана!";
             }
         }
         private async Task CreateBase()
@@ -48,6 +55,9 @@ namespace OrderManadger.Model.DataBase
             await Task.Delay(5000);
             conn = new SqlConnection(connStr);
             await conn.OpenAsync();
+        }
+        private async Task CreateTables()
+        {
             string text = @"CREATE TABLE Entry(
                         ID int IDENTITY(1,1) PRIMARY KEY,
                         OrderList varchar(max) NOT NULL,
@@ -55,11 +65,31 @@ namespace OrderManadger.Model.DataBase
                         Comment varchar(255),
                         Status varchar (20) );";
             SqlCommand cmdCreateTable = new SqlCommand(text, conn);
+            await cmdCreateTable.ExecuteNonQueryAsync();
+            await Task.Delay(100);
 
+            text = @"CREATE TABLE Sellers(
+                        ID int IDENTITY(1,1) PRIMARY KEY,
+                        Seller varchar(255) NOT NULL );";
+            cmdCreateTable = new SqlCommand(text, conn);
+            await cmdCreateTable.ExecuteNonQueryAsync();
+            await Task.Delay(100);
+
+            text = @"CREATE TABLE Assortment(
+                        ID int IDENTITY(1,1) PRIMARY KEY,
+                        Position varchar(255) NOT NULL );";
+            cmdCreateTable = new SqlCommand(text, conn);
+            await cmdCreateTable.ExecuteNonQueryAsync();
+            await Task.Delay(100);
         }
         public string Status
         {
             set => StatusChanged?.Invoke(null, new DataBaseEventArgs(value));
+        }
+
+        public void Test()
+        {
+            SqlCommand cmd = new SqlCommand();
         }
     }
 }
