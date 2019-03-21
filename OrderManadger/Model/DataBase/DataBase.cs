@@ -87,9 +87,21 @@ namespace OrderManadger.Model.DataBase
             set => StatusChanged?.Invoke(null, new DataBaseEventArgs(value));
         }
 
-        public void Test()
+        public async void Test()
         {
-            SqlCommand cmd = new SqlCommand();
+            SqlCommand cmd = new SqlCommand("INSERT INTO Entry VALUES ('seg','@time', 'srags', 'seGF')",conn);
+            cmd.Parameters.AddWithValue("@time", DateTime.Now);
+            await cmd.ExecuteNonQueryAsync();
+            await Task.Delay(100);
+
+            cmd = new SqlCommand("INSERT INTO Sellers VALUES ('1seg')", conn);
+            await cmd.ExecuteNonQueryAsync();
+            await Task.Delay(100);
+
+            cmd = new SqlCommand("INSERT INTO Assortment VALUES ('2seg')", conn);
+            await cmd.ExecuteNonQueryAsync();
+            await Task.Delay(100);
+            Status = "Запись в базу данных произведена успешно";
         }
     }
 }

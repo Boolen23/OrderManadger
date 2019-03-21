@@ -16,7 +16,7 @@ namespace OrderManadger.ViewModel
         public MainViewModel()
         {
             Base = new ObservableCollection<Entry>();
-            DataBase SqlDataBase = new DataBase();
+            SqlDataBase = new DataBase();
             SqlDataBase.StatusChanged += SqlDataBase_StatusChanged;
             //Base.CollectionChanged += Base_CollectionChanged;
             //Sellers = XML.LoadSellers();
@@ -25,7 +25,7 @@ namespace OrderManadger.ViewModel
             Assortment = new List<string>();
             ResetEntry();
         }
-
+        DataBase SqlDataBase;
         private void SqlDataBase_StatusChanged(object sender, DataBaseEventArgs e)
         {
             BaseComment = e.DataBaseStatus;
@@ -179,7 +179,8 @@ namespace OrderManadger.ViewModel
         public ICommand SaveCommand => _SaveCommand ?? (_SaveCommand = new RelayCommand(OnSaveCommand));
         private void OnSaveCommand(object entryObject)
         {
-            XML.Save(Base, Sellers, Assortment);
+            // XML.Save(Base, Sellers, Assortment);
+            SqlDataBase.Test();
         }
     }
 }
