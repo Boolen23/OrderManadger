@@ -8,7 +8,10 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:vm ="clr-namespace:OrderManadger.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"  Background="#D83232dc"
+        Title="MainWindow" Height="520" Width="410">
     <Window.Resources>
         <ResourceDictionary Source="MainDictionary.xaml"/>
     </Window.Resources>
