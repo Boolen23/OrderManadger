@@ -7,13 +7,13 @@
     <conv:TextLenghtToVisibility x:Key="TextVisibility"/>
     <conv:EntryToButtonText x:Key="EntryToText"/>
     <DataTemplate x:Key="OrdersTemplate">
-        <ListBox ItemsSource="{Binding}" IsSynchronizedWithCurrentItem="True">
+        <ListBox Background="Transparent" ItemsSource="{Binding}" IsSynchronizedWithCurrentItem="True">
             <ListBox.ItemTemplate>
                 <ItemContainerTemplate>
-                    <StackPanel Orientation="Horizontal" Height="23">
-                        <ComboBox IsEditable="True" Width="100" Text="{Binding Seller}" ItemsSource="{Binding Sellers}"/>
-                        <TextBox Text="{Binding Count}" Width="50"/>
-                        <ComboBox IsEditable="True" Width="100" Text="{Binding Position}" ItemsSource="{Binding Assortment}"/>
+                    <StackPanel Background="Transparent" Orientation="Horizontal" Height="23">
+                        <ComboBox Background="Transparent" IsEditable="True" Width="100" Text="{Binding Seller}" ItemsSource="{Binding Sellers}"/>
+                        <TextBox Background="Transparent" Text="{Binding Count}" Width="50"/>
+                        <ComboBox Background="Transparent" IsEditable="True" Width="100" Text="{Binding Position}" ItemsSource="{Binding Assortment}"/>
                     </StackPanel>
                 </ItemContainerTemplate>
             </ListBox.ItemTemplate>
