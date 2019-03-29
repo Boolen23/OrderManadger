@@ -15,14 +15,19 @@ namespace OrderManadger.ViewModel
     {
         public MainViewModel()
         {
-            Base = new ObservableCollection<Entry>();
-            SqlDataBase = new DataBase();
-            SqlDataBase.StatusChanged += SqlDataBase_StatusChanged;
+            //SqlDataBase = new DataBase();
+            //SqlDataBase.StatusChanged += SqlDataBase_StatusChanged;
             //Base.CollectionChanged += Base_CollectionChanged;
             //Sellers = XML.LoadSellers();
             //Assortment = XML.LoadAssortment();
-            Sellers = new List<string>();
-            Assortment = new List<string>();
+            //Sellers = new List<string>();
+            //Assortment = new List<string>();
+            BaseComment = "Старт загрузки";
+            ObservableCollection<Entry> tempBase;
+            bool DownLoadResult = Data.TryLoad(out tempBase, out Sellers, out Assortment);
+            BaseComment = DownLoadResult? "Загрузка прошла успешно": "Файл БД не найден или поврежден";
+            Base = tempBase;
+            Base.CollectionChanged += Base_CollectionChanged;
             ResetEntry();
         }
         DataBase SqlDataBase;
@@ -33,7 +38,8 @@ namespace OrderManadger.ViewModel
 
         private void Base_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            XML.Save(Base, Sellers, Assortment);
+            //XML.Save(Base, Sellers, Assortment);
+            Data.Save(Base, Sellers, Assortment);
         }
 
         private List<string> Sellers;
@@ -180,7 +186,8 @@ namespace OrderManadger.ViewModel
         private void OnSaveCommand(object entryObject)
         {
             // XML.Save(Base, Sellers, Assortment);
-            SqlDataBase.Test();
+            // SqlDataBase.Test();
+            Data.Save(Base, Sellers, Assortment);
         }
     }
 }
