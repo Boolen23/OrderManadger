@@ -15,32 +15,14 @@ namespace OrderManadger.ViewModel
     {
         public MainViewModel()
         {
-            //SqlDataBase = new DataBase();
-            //SqlDataBase.StatusChanged += SqlDataBase_StatusChanged;
-            //Base.CollectionChanged += Base_CollectionChanged;
-            //Sellers = XML.LoadSellers();
-            //Assortment = XML.LoadAssortment();
-            //Sellers = new List<string>();
-            //Assortment = new List<string>();
             BaseComment = "Старт загрузки";
             ObservableCollection<Entry> tempBase;
             bool DownLoadResult = Data.TryLoad(out tempBase, out Sellers, out Assortment);
             BaseComment = DownLoadResult? "Загрузка прошла успешно": "Файл БД не найден или поврежден";
             Base = tempBase;
-            Base.CollectionChanged += Base_CollectionChanged;
             ResetEntry();
         }
-        DataBase SqlDataBase;
-        private void SqlDataBase_StatusChanged(object sender, DataBaseEventArgs e)
-        {
-            BaseComment = e.DataBaseStatus;
-        }
 
-        private void Base_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            //XML.Save(Base, Sellers, Assortment);
-            Data.Save(Base, Sellers, Assortment);
-        }
 
         private List<string> Sellers;
         private List<string> Assortment;
@@ -145,6 +127,7 @@ namespace OrderManadger.ViewModel
             Entry entry = new Entry(Date, orders, Comment, CurrentStatus);
             ResetEntry();
             Base.Add(entry);
+            SaveData();
         }
 
         private ICommand _DeleteEntryCommand;
@@ -152,6 +135,7 @@ namespace OrderManadger.ViewModel
         private void OnDeleteEntryCommand(object entryObject)
         {
             Base.Remove((Entry)entryObject);
+            SaveData();
         }
 
         private ICommand _UpdateEntryCommand;
@@ -166,6 +150,7 @@ namespace OrderManadger.ViewModel
             NewOrderList = new ObservableCollection<OrderViewModel>();
             foreach (Order ordr in current.OrderList)
                 NewOrderList.Add(new OrderViewModel(ordr, Sellers, Assortment));
+            SaveData();
         }
         private void ResetEntry()
         {
@@ -183,11 +168,8 @@ namespace OrderManadger.ViewModel
 
         private ICommand _SaveCommand;
         public ICommand SaveCommand => _SaveCommand ?? (_SaveCommand = new RelayCommand(OnSaveCommand));
-        private void OnSaveCommand(object entryObject)
-        {
-            // XML.Save(Base, Sellers, Assortment);
-            // SqlDataBase.Test();
-            Data.Save(Base, Sellers, Assortment);
-        }
+        private void OnSaveCommand(object entryObject) => SaveData();
+        private void SaveData () => Data.Save(Base, Sellers, Assortment);
+
     }
 }
