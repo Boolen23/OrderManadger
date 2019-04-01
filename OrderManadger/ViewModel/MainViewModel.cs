@@ -15,14 +15,18 @@ namespace OrderManadger.ViewModel
     {
         public MainViewModel()
         {
-            BaseComment = "Старт загрузки";
             ObservableCollection<Entry> tempBase;
             bool DownLoadResult = Data.TryLoad(out tempBase, out Sellers, out Assortment);
-            BaseComment = DownLoadResult? "Загрузка прошла успешно": "Файл БД не найден или поврежден";
             Base = tempBase;
+            Base.CollectionChanged += Base_CollectionChanged;
             ResetEntry();
         }
 
+        private void Base_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Base.OrderByDescending(x => x.Datetime);
+            OnPropertyChanged("Base");
+        }
 
         private List<string> Sellers;
         private List<string> Assortment;
@@ -76,18 +80,6 @@ namespace OrderManadger.ViewModel
                 OnPropertyChanged();
             }
         }
-
-        private string _BaseComment;
-        public string BaseComment
-        {
-            get => _BaseComment;
-            set
-            {
-                _BaseComment = value;
-                OnPropertyChanged();
-            }
-        }
-
 
         private Status _CurrentStatus;
         public Status CurrentStatus
@@ -150,6 +142,7 @@ namespace OrderManadger.ViewModel
             NewOrderList = new ObservableCollection<OrderViewModel>();
             foreach (Order ordr in current.OrderList)
                 NewOrderList.Add(new OrderViewModel(ordr, Sellers, Assortment));
+            Base.OrderByDescending(x => x.Datetime);
             SaveData();
         }
         private void ResetEntry()

@@ -25,7 +25,6 @@ namespace OrderManadger
         public MainWindow()
         {
             InitializeComponent();
-            ToRight();
         }
         #region Move
 
@@ -59,6 +58,10 @@ namespace OrderManadger
                 this.Top = this.Top + (MousePositionAbs.Y - this.lmAbs.Y);
                 this.lmAbs = MousePositionAbs;
             }
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            ToRight();
         }
 
         #endregion
@@ -97,5 +100,14 @@ namespace OrderManadger
             this.Left = desktopWorkingArea.Right - this.Width;
             this.Top = desktopWorkingArea.Bottom - this.Height;
         }
+        private void Close_click(object s, EventArgs e)
+        {
+            Close();
+        }
+        private void Right_click(object s, EventArgs e)
+        {
+            ToRight();
+        }
+
     }
 }

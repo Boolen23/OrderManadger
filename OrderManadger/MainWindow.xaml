@@ -10,8 +10,10 @@
         mc:Ignorable="d"
         WindowStyle="None"
         AllowsTransparency="True"
-          Background="#D83232dc"
-        Title="MainWindow" Height="520" Width="500">
+        Background="#D83232dc"
+        Title="MainWindow" Height="520" Width="347.966"
+        MouseDown="Window_MouseDown" MouseUp="Window_MouseUp" MouseMove="Window_MouseMove"
+        Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary Source="MainDictionary.xaml"/>
     </Window.Resources>
@@ -20,88 +22,128 @@
             <i:InvokeCommandAction Command="{Binding SaveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox }, Path=SelectedItem}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
-    <StackPanel>
-        <StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <ComboBox Width="85" Background="Transparent" SelectedIndex="{Binding CurrentStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
-                    <ComboBoxItem>Сделать</ComboBoxItem>
-                    <ComboBoxItem>В обработке</ComboBoxItem>
-                    <ComboBoxItem>Завершено</ComboBoxItem>
-                </ComboBox>
-                <DatePicker Background="Transparent" SelectedDate="{Binding Date, Mode=TwoWay}" Margin="2,0,0,0" >
-                    <DatePicker.Resources>
-                        <Style TargetType="ContentControl">
-                            <Style.Triggers>
-                                <Trigger Property="Name" Value="PART_Watermark">
-                                    <Setter Property="ContentControl.Template">
-                                        <Setter.Value>
-                                            <ControlTemplate>
-                                                <TextBlock Text=""/>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DatePicker.Resources>
-                </DatePicker>
-                <Button Command="{Binding AddOrderCommand}" Margin="2,0,0,0" Width="17" Height="17" VerticalAlignment="Center" HorizontalAlignment="Center">
+    <Grid Background="#00FFFFFF">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Width="20" Height="20" Style="{StaticResource ButtonStyle}" >
                     <Button.Template>
                         <ControlTemplate>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Ellipse.Fill" TargetName="ell" Value="#0000FF"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType=Button, AncestorLevel=1}}" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType=Button, AncestorLevel=1}}">
-                                <Ellipse Fill="#00BFFF" Name="ell"/>
-                                <Path Name="path" Data="M0.5,0 L0.5,1 M0,0.5 L1,0.5"  StrokeThickness="2.5"  Stretch="Fill"     Stroke="#98FF98" />
+                            <Grid Background="{Binding Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}">
+                                <Rectangle Fill="Aqua" Height="2" Width="17" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,3"/>
                             </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-                <Button Command="{Binding ResetEntryCommand}" Margin="2,0,0,0" Width="17" Height="17">
+                <Button Click="Right_click" Width="20" Height="20" Style="{StaticResource ButtonStyle}" >
                     <Button.Template>
                         <ControlTemplate>
-                                <Path Name="delPath" Data="M7.1999998,0L16,8.7999997 24.799999,0 32,7.1999998 23.2,16 32,24.799999 24.799999,32 16,23.2 7.1999998,32 0,24.799999 8.7999997,16 0,7.1999998z"   Stretch="Uniform" Fill="Red"/>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Path.Stroke" TargetName="delPath" Value="#8B0000"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
+                            <Grid Background="{Binding Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}">
+                                <Line Stroke="Aqua" StrokeThickness="2" X1="5" Y1="5" X2="16" Y2="16"/>
+                                <Line Stroke="Aqua" StrokeThickness="2" X1="15" Y1="10" X2="16" Y2="16"/>
+                                <Line Stroke="Aqua" StrokeThickness="2" X1="10" Y1="15" X2="16" Y2="16"/>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-                <Button Background="Transparent" Margin="2,0,0,0" Content="{Binding EntryToUpdate, Converter={StaticResource EntryToText}}"  Width="100" Command="{Binding NewEntryCommand}"/>
+                <Button Click="Close_click" Width="20" Height="20" Style="{StaticResource ButtonStyle}" >
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Grid Background="{Binding Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}">
+                                <Line Stroke="Aqua" StrokeThickness="2" X1="5" Y1="5" X2="15" Y2="15"/>
+                                <Line Stroke="Aqua" StrokeThickness="2" X1="5" Y1="15" X2="15" Y2="5"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </StackPanel>
-            <ContentPresenter Content="{Binding NewOrderList}" ContentTemplate="{StaticResource OrdersTemplate}"/>
-            <TextBox TextWrapping="Wrap" Background="Transparent" AcceptsReturn="True" SpellCheck.IsEnabled="True" Text="{Binding Comment, Mode=TwoWay}"/>
         </StackPanel>
-        <ListBox Name="MainBase" ItemsSource="{Binding Base}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListBox.ItemTemplate>
-                <ItemContainerTemplate>
-                    <StackPanel Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Background="{Binding status, Converter={StaticResource StatusToBrush}, Mode=OneWay}">
-                        <TextBlock HorizontalAlignment="Center" Text="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Orders, Converter={StaticResource TextVisibility}}"/>
-                        <TextBlock HorizontalAlignment="Center" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Comment, Converter={StaticResource TextVisibility}}"/>
-                        <TextBlock HorizontalAlignment="Center" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
+        <StackPanel Grid.Row="1" Background="Transparent">
+            <Expander Header="Add" Background="Transparent">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox Width="85" SelectedIndex="{Binding CurrentStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
+                            <ComboBoxItem>Сделать</ComboBoxItem>
+                            <ComboBoxItem>В обработке</ComboBoxItem>
+                            <ComboBoxItem>Завершено</ComboBoxItem>
+                        </ComboBox>
+                        <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" Margin="2,0,0,0" >
+                            <DatePicker.Resources>
+                                <Style TargetType="ContentControl">
+                                    <Style.Triggers>
+                                        <Trigger Property="Name" Value="PART_Watermark">
+                                            <Setter Property="ContentControl.Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <TextBlock Text=""/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DatePicker.Resources>
+                        </DatePicker>
+                        <Button Command="{Binding AddOrderCommand}" Margin="2,0,0,0" Width="17" Height="17" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Ellipse.Fill" TargetName="ell" Value="#0000FF"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                    <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType=Button, AncestorLevel=1}}" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType=Button, AncestorLevel=1}}">
+                                        <Ellipse Fill="#00BFFF" Name="ell"/>
+                                        <Path Name="path" Data="M0.5,0 L0.5,1 M0,0.5 L1,0.5"  StrokeThickness="2.5"  Stretch="Fill"     Stroke="#98FF98" />
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button Command="{Binding ResetEntryCommand}" Margin="2,0,0,0" Width="17" Height="17">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Path Name="delPath" Data="M7.1999998,0L16,8.7999997 24.799999,0 32,7.1999998 23.2,16 32,24.799999 24.799999,32 16,23.2 7.1999998,32 0,24.799999 8.7999997,16 0,7.1999998z"   Stretch="Uniform" Fill="Red"/>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Path.Stroke" TargetName="delPath" Value="#8B0000"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button Margin="2,0,0,0" Content="{Binding EntryToUpdate, Converter={StaticResource EntryToText}}"  Width="100" Command="{Binding NewEntryCommand}"/>
                     </StackPanel>
-                </ItemContainerTemplate>
-            </ListBox.ItemTemplate>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick" >
-                    <i:InvokeCommandAction Command="{Binding UpdateEntryCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox }, Path=SelectedItem}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Удалить запись" Command="{Binding DeleteEntryCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}, Path=PlacementTarget.SelectedItem}"/>
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
-        <TextBlock Text="{Binding BaseComment}" TextWrapping="Wrap"/>
-    </StackPanel>
+                    <ContentPresenter Content="{Binding NewOrderList}" ContentTemplate="{StaticResource OrdersTemplate}"/>
+                    <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Text="{Binding Comment, Mode=TwoWay}"/>
+                </StackPanel>
+            </Expander>
+            <ListBox Name="MainBase" ItemsSource="{Binding Base}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <ItemContainerTemplate>
+                        <StackPanel Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Background="{Binding status, Converter={StaticResource StatusToBrush}, Mode=OneWay}">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Orders, Converter={StaticResource TextVisibility}}"/>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Comment, Converter={StaticResource TextVisibility}}"/>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </ItemContainerTemplate>
+                </ListBox.ItemTemplate>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick" >
+                        <i:InvokeCommandAction Command="{Binding UpdateEntryCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox }, Path=SelectedItem}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Удалить запись" Command="{Binding DeleteEntryCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}, Path=PlacementTarget.SelectedItem}"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+        </StackPanel>
+    </Grid>
 </Window>

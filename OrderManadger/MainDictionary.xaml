@@ -7,7 +7,7 @@
     <conv:TextLenghtToVisibility x:Key="TextVisibility"/>
     <conv:EntryToButtonText x:Key="EntryToText"/>
     <DataTemplate x:Key="OrdersTemplate">
-        <ListBox Background="Transparent" ItemsSource="{Binding}" IsSynchronizedWithCurrentItem="True">
+        <ListBox ItemsSource="{Binding}" IsSynchronizedWithCurrentItem="True">
             <ListBox.ItemTemplate>
                 <ItemContainerTemplate>
                     <StackPanel Background="Transparent" Orientation="Horizontal" Height="23">
@@ -19,5 +19,16 @@
             </ListBox.ItemTemplate>
         </ListBox>
     </DataTemplate>
+    <Style TargetType="Button" x:Key="ButtonStyle">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#33ffffff"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Background" Value="Transparent"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 
 </ResourceDictionary>
