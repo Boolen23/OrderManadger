@@ -11,22 +11,14 @@ using System.Windows.Input;
 
 namespace OrderManadger.ViewModel
 {
-    public class MainViewModel:BindableBase
+    public class MainViewModel : BindableBase
     {
         public MainViewModel()
         {
-            ObservableCollection<Entry> tempBase;
-            bool DownLoadResult = Data.TryLoad(out tempBase, out Sellers, out Assortment);
-            Base = tempBase;
-            Base.CollectionChanged += Base_CollectionChanged;
+            Data.TryLoad(out _Base, out Sellers, out Assortment);
             ResetEntry();
         }
 
-        private void Base_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            Base.OrderByDescending(x => x.Datetime);
-            OnPropertyChanged("Base");
-        }
 
         private List<string> Sellers;
         private List<string> Assortment;
@@ -36,7 +28,7 @@ namespace OrderManadger.ViewModel
             get => _Base;
             set
             {
-                _Base = value;
+                _Base = new ObservableCollection<Entry>(value.OrderByDescending(i => i.Date));
                 OnPropertyChanged();
             }
         }
@@ -119,7 +111,7 @@ namespace OrderManadger.ViewModel
             Entry entry = new Entry(Date, orders, Comment, CurrentStatus);
             ResetEntry();
             Base.Add(entry);
-            SaveData();
+            UpdateBase();
         }
 
         private ICommand _DeleteEntryCommand;
@@ -127,7 +119,7 @@ namespace OrderManadger.ViewModel
         private void OnDeleteEntryCommand(object entryObject)
         {
             Base.Remove((Entry)entryObject);
-            SaveData();
+            UpdateBase();
         }
 
         private ICommand _UpdateEntryCommand;
@@ -142,8 +134,7 @@ namespace OrderManadger.ViewModel
             NewOrderList = new ObservableCollection<OrderViewModel>();
             foreach (Order ordr in current.OrderList)
                 NewOrderList.Add(new OrderViewModel(ordr, Sellers, Assortment));
-            Base.OrderByDescending(x => x.Datetime);
-            SaveData();
+            UpdateBase();
         }
         private void ResetEntry()
         {
@@ -162,7 +153,12 @@ namespace OrderManadger.ViewModel
         private ICommand _SaveCommand;
         public ICommand SaveCommand => _SaveCommand ?? (_SaveCommand = new RelayCommand(OnSaveCommand));
         private void OnSaveCommand(object entryObject) => SaveData();
-        private void SaveData () => Data.Save(Base, Sellers, Assortment);
+        private void SaveData() => Data.Save(Base, Sellers, Assortment);
+        private void UpdateBase()
+        {
+            Base = new ObservableCollection<Entry>(Base.OrderByDescending(i => i.Date));
+            SaveData();
+        }
 
     }
 }
