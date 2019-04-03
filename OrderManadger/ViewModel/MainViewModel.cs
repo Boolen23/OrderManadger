@@ -28,7 +28,7 @@ namespace OrderManadger.ViewModel
             get => _Base;
             set
             {
-                _Base = new ObservableCollection<Entry>(value.OrderByDescending(i => i.Date));
+                _Base = new ObservableCollection<Entry>(value.OrderByDescending(i => i.Datetime));
                 OnPropertyChanged();
             }
         }
@@ -156,7 +156,7 @@ namespace OrderManadger.ViewModel
         private void SaveData() => Data.Save(Base, Sellers, Assortment);
         private void UpdateBase()
         {
-            Base = new ObservableCollection<Entry>(Base.OrderByDescending(i => i.Date));
+            Base = new ObservableCollection<Entry>(Base.OrderByDescending(i => i.Datetime));
             SaveData();
         }
 

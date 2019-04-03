@@ -19,7 +19,7 @@ namespace OrderManadger.Model
         }
         public int id;
         public List<Order> OrderList;
-        public DateTime Datetime;
+        public DateTime Datetime { get; set; }
         public Status status { get; set; }
         public string Comment { get; set; }
         public string Orders { get => string.Join(Environment.NewLine, OrderList); }

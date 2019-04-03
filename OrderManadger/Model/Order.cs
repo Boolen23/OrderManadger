@@ -14,7 +14,7 @@ namespace OrderManadger.Model
         public string Count { get; set; }
         public override string ToString()
         {
-            return Seller + " -> " + Count + " -> " + Article;
+            return Seller + "    -> " + Count + " -> " + Article;
         }
     }
 }
