@@ -126,11 +126,13 @@
             <ListBox Name="MainBase" ItemsSource="{Binding Base}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <ItemContainerTemplate>
-                        <StackPanel Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Background="{Binding status, Converter={StaticResource StatusToBrush}, Mode=OneWay}">
-                            <TextBlock HorizontalAlignment="Center" Text="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Orders, Converter={StaticResource TextVisibility}}"/>
-                            <TextBlock HorizontalAlignment="Center" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Comment, Converter={StaticResource TextVisibility}}"/>
-                            <TextBlock HorizontalAlignment="Center" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Border BorderBrush="DarkBlue" BorderThickness="1">
+                          <StackPanel Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Background="{Binding status, Converter={StaticResource StatusToBrush}, Mode=OneWay}">
+                            <TextBlock Text="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Orders, Converter={StaticResource TextVisibility}}"/>
+                            <TextBlock Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Comment, Converter={StaticResource TextVisibility}}"/>
+                            <TextBlock Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
+                        </Border>
                     </ItemContainerTemplate>
                 </ListBox.ItemTemplate>
                 <i:Interaction.Triggers>
