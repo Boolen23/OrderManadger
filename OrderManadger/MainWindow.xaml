@@ -18,8 +18,11 @@
         <ResourceDictionary Source="MainDictionary.xaml"/>
     </Window.Resources>
     <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Window.Closed" >
+        <i:EventTrigger EventName="Windows.Closed" >
             <i:InvokeCommandAction Command="{Binding SaveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox }, Path=SelectedItem}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.DataContext>
@@ -65,7 +68,7 @@
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1" Background="Transparent">
-            <Expander Header="Add" Background="Transparent">
+            <Expander Name="AddExpander" Header="Add" Background="Transparent">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <ComboBox Width="85" SelectedIndex="{Binding CurrentStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
@@ -135,6 +138,17 @@
                         </Border>
                     </ItemContainerTemplate>
                 </ListBox.ItemTemplate>
+                <ListBox.Triggers>
+                    <EventTrigger RoutedEvent="ListBox.MouseDoubleClick">
+                          <BeginStoryboard Name="OpenAdd">
+                            <Storyboard>
+                                <BooleanAnimationUsingKeyFrames Storyboard.TargetName="AddExpander" Storyboard.TargetProperty="IsExpanded">
+                                    <DiscreteBooleanKeyFrame Value="True"/>
+                                </BooleanAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </ListBox.Triggers>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick" >
                         <i:InvokeCommandAction Command="{Binding UpdateEntryCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox }, Path=SelectedItem}" />
