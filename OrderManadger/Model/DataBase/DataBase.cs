@@ -24,10 +24,11 @@ namespace OrderManadger.Model.DataBase
                 Data.TryLoad(out Entrys, out Sellers, out Assortment);
             });
         }
-        public async void Save(Entry EntryToAdded, Entry UpdatedEntry = null)
+        public async void Save(Entry EntryToAdded, List<string> _Sellers, List<string> _Assortment, Entry UpdatedEntry=null)
         {
             if (UpdatedEntry != null) Entrys.Remove(UpdatedEntry);
             Entrys.Add(EntryToAdded);
+            Data.Save(Entrys, _Sellers, _Assortment);
         }
     }
 }
