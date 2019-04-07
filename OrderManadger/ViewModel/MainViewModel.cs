@@ -17,6 +17,12 @@ namespace OrderManadger.ViewModel
         public MainViewModel()
         {
             LocalDataBase = new DataBase();
+            LocalDataBase.DataUpdated += LocalDataBase_DataUpdated;
+        }
+
+        private void LocalDataBase_DataUpdated(object sender, EventArgs e)
+        {
+            Base = LocalDataBase.GetEnries(Status.Make);
         }
         #region Fields
         private DataBase LocalDataBase;
@@ -46,10 +52,7 @@ namespace OrderManadger.ViewModel
         }
         private void OnNewEntryAdded(object o)
         {
-            if (EntryToUpdate != null) Base.Remove(EntryToUpdate);
-           
-            Base.Add(CompileEntry);
-            UpdateBase();
+            LocalDataBase.Add(CompileEntry, Sellers, Assortment, EntryToUpdate);
         }
         private Entry CompileEntry
         {
@@ -72,20 +75,23 @@ namespace OrderManadger.ViewModel
         }
         private void OnDeleteEntryCommand(object entryObject)
         {
-            Base.Remove((Entry)entryObject);
-            UpdateBase();
+            LocalDataBase.Delete((Entry)entryObject);
         }
         private void OnUpdateEntryCommand(object entryObject)
         {
             Entry current = (Entry)entryObject;
             EntryToUpdate = current;
-            Date = current.Datetime;
-            Comment = current.Comment;
-            CurrentStatus = current.status;
+            SetControlsToUpdate(current);
+        }
+        private void SetControlsToUpdate(Entry entry)
+        {
+            EntryToUpdate = entry;
+            Date = entry.Datetime;
+            Comment = entry.Comment;
+            CurrentStatus = entry.status;
             NewOrderList = new ObservableCollection<OrderViewModel>();
-            foreach (Order ordr in current.OrderList)
+            foreach (Order ordr in entry.OrderList)
                 NewOrderList.Add(new OrderViewModel(ordr, Sellers, Assortment));
-            UpdateBase();
         }
         private void ResetEntry()
         {
@@ -107,7 +113,7 @@ namespace OrderManadger.ViewModel
         private async Task OnLoadData(CancellationToken ct)
         {
             await LocalDataBase.StartLoad();
-            Base = new ObservableCollection<Entry>(LocalDataBase.Entrys.Where(i => i.status == Status.Done));
+            Base = LocalDataBase.GetEnries(Status.Make);
             Sellers = LocalDataBase.Sellers;
             Assortment = LocalDataBase.Assortment;
             ResetEntry();

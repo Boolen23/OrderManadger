@@ -73,6 +73,7 @@
     <Compile Include="Model\DataBase\DataBase.cs" />
     <Compile Include="Model\DataBase\DataBaseEventArgs.cs" />
     <Compile Include="Model\DataBase\SaveObject.cs" />
+    <Compile Include="Model\Filter.cs" />
     <Compile Include="Model\Status.cs" />
     <Compile Include="ViewModel\BindableBase.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

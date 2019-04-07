@@ -14,6 +14,7 @@ namespace OrderManadger.Model.DataBase
         public DataBase()
         {
         }
+        public event EventHandler DataUpdated;
         public ObservableCollection<Entry> Entrys;
         public List<string> Sellers;
         public List<string> Assortment;
@@ -23,12 +24,29 @@ namespace OrderManadger.Model.DataBase
             {
                 Data.TryLoad(out Entrys, out Sellers, out Assortment);
             });
+            DataUpdated?.Invoke(null, null);
         }
-        public async void Save(Entry EntryToAdded, List<string> _Sellers, List<string> _Assortment, Entry UpdatedEntry=null)
+        public async void Add(Entry EntryToAdded, List<string> _Sellers, List<string> _Assortment, Entry UpdatedEntry=null)
         {
-            if (UpdatedEntry != null) Entrys.Remove(UpdatedEntry);
-            Entrys.Add(EntryToAdded);
-            Data.Save(Entrys, _Sellers, _Assortment);
+            await Task.Run(() =>
+            {
+                if (UpdatedEntry != null) Entrys.Remove(UpdatedEntry);
+                UpdatedEntry = null;
+                Entrys.Add(EntryToAdded);
+                Data.Save(Entrys, _Sellers, _Assortment);
+            });
+            DataUpdated?.Invoke(null, null);
         }
+        public async void Delete(Entry EntryToDelete)
+        {
+            await Task.Run(() =>
+            {
+                Entrys.Remove(EntryToDelete);
+                Data.Save(Entrys, Sellers, Assortment);
+            });
+            DataUpdated?.Invoke(null, null);
+        }
+        public ObservableCollection<Entry> GetEnries(Status stat) => Entrys.Filtrate(stat);
+    
     }
 }
