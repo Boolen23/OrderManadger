@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -25,6 +26,11 @@ namespace OrderManadger
         public MainWindow()
         {
             InitializeComponent();
+            ShowInTaskbar = false;
+            Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/OrderManadger;component/Icon1.ico")).Stream;
+            notifyIcon = new System.Windows.Forms.NotifyIcon();
+            notifyIcon.Click += new EventHandler(notifyIcon_Click);
+            notifyIcon.Icon = new System.Drawing.Icon(iconStream);
         }
         #region Move
 
@@ -108,6 +114,16 @@ namespace OrderManadger
         {
             ToRight();
         }
-
+        private void Roll_Up_Click(object s, EventArgs e)
+        {
+            this.Hide();
+            notifyIcon.Visible = true;
+        }
+        private System.Windows.Forms.NotifyIcon notifyIcon = null;
+        private void notifyIcon_Click(object sender, EventArgs e)
+        {
+            this.Show();
+            notifyIcon.Visible = false;
+        }
     }
 }

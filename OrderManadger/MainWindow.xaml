@@ -104,7 +104,7 @@
         </ComboBox>
         <StackPanel Grid.Row="0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button Width="20" Height="20" Style="{StaticResource ButtonStyle}" >
+                <Button Click="Roll_Up_Click" Width="20" Height="20" Style="{StaticResource ButtonStyle}" >
                     <Button.Template>
                         <ControlTemplate>
                             <Grid Background="{Binding Background, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}">
@@ -137,7 +137,7 @@
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1" Background="Transparent">
-            <ListBox Name="MainBase" ItemsSource="{Binding Base}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox Background="Transparent" Name="MainBase" ItemsSource="{Binding Base}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <ItemContainerTemplate>
                         <Border BorderBrush="DarkBlue" BorderThickness="1">
