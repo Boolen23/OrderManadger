@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace OrderManadger.Model
 {
-    public enum Status { Make, Processing, Done}
+    public enum Status { Make, Processing, Done, All}
 }

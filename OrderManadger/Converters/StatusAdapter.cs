@@ -17,6 +17,7 @@ namespace OrderManadger.Converters
             Status status = (Status)value;
             switch (status)
             {
+                case Status.All:return 3;
                 case Status.Done: return 2;
                 case Status.Make: return 0;
                 case Status.Processing: return 1;
@@ -32,6 +33,7 @@ namespace OrderManadger.Converters
                 case 2: return Status.Done;
                 case 0: return Status.Make;
                 case 1: return Status.Processing;
+                case 3:return Status.All;
             }
             return null;
         }

@@ -33,6 +33,75 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Expander Grid.Row="0" Name="AddExpander" Header="Add" Background="Transparent">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox Width="85" SelectedIndex="{Binding CurrentStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
+                        <ComboBoxItem>Сделать</ComboBoxItem>
+                        <ComboBoxItem>В обработке</ComboBoxItem>
+                        <ComboBoxItem>Завершено</ComboBoxItem>
+                    </ComboBox>
+                    <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" Margin="2,0,0,0" >
+                        <DatePicker.Resources>
+                            <Style TargetType="ContentControl">
+                                <Style.Triggers>
+                                    <Trigger Property="Name" Value="PART_Watermark">
+                                        <Setter Property="ContentControl.Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <TextBlock Text=""/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DatePicker.Resources>
+                    </DatePicker>
+                    <Button Command="{Binding AddOrderCommand}" Margin="2,0,0,0" Width="17" Height="17" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Ellipse.Fill" TargetName="ell" Value="#0000FF"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                                <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType=Button, AncestorLevel=1}}" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType=Button, AncestorLevel=1}}">
+                                    <Ellipse Fill="#00BFFF" Name="ell"/>
+                                    <Path Name="path" Data="M0.5,0 L0.5,1 M0,0.5 L1,0.5"  StrokeThickness="2.5"  Stretch="Fill"     Stroke="#98FF98" />
+                                </Grid>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button Command="{Binding ResetEntryCommand}" Margin="2,0,0,0" Width="17" Height="17">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Path Name="delPath" Data="M7.1999998,0L16,8.7999997 24.799999,0 32,7.1999998 23.2,16 32,24.799999 24.799999,32 16,23.2 7.1999998,32 0,24.799999 8.7999997,16 0,7.1999998z"   Stretch="Uniform" Fill="Red"/>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Path.Stroke" TargetName="delPath" Value="#8B0000"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button Margin="2,0,0,0" Content="{Binding EntryToUpdate, Converter={StaticResource EntryToText}}"  Width="100" Command="{Binding NewEntryCommand}"/>
+                </StackPanel>
+                <ContentPresenter Content="{Binding NewOrderList}" ContentTemplate="{StaticResource OrdersTemplate}"/>
+                <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Text="{Binding Comment, Mode=TwoWay}"/>
+            </StackPanel>
+        </Expander>
+        <ComboBox Margin="80,0,0,0" Grid.Row="0" VerticalAlignment="Top" Width="120" Height="23" Background="Transparent" HorizontalAlignment="Left" SelectedIndex="{Binding FilterStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
+            <ComboBoxItem>Сделать</ComboBoxItem>
+            <ComboBoxItem>В обработке</ComboBoxItem>
+            <ComboBoxItem>Завершено</ComboBoxItem>
+            <ComboBoxItem>Все</ComboBoxItem>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding FilterStatusCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ComboBox>
         <StackPanel Grid.Row="0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button Width="20" Height="20" Style="{StaticResource ButtonStyle}" >
@@ -68,64 +137,6 @@
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1" Background="Transparent">
-            <Expander Name="AddExpander" Header="Add" Background="Transparent">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <ComboBox Width="85" SelectedIndex="{Binding CurrentStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
-                            <ComboBoxItem>Сделать</ComboBoxItem>
-                            <ComboBoxItem>В обработке</ComboBoxItem>
-                            <ComboBoxItem>Завершено</ComboBoxItem>
-                        </ComboBox>
-                        <DatePicker SelectedDate="{Binding Date, Mode=TwoWay}" Margin="2,0,0,0" >
-                            <DatePicker.Resources>
-                                <Style TargetType="ContentControl">
-                                    <Style.Triggers>
-                                        <Trigger Property="Name" Value="PART_Watermark">
-                                            <Setter Property="ContentControl.Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate>
-                                                        <TextBlock Text=""/>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DatePicker.Resources>
-                        </DatePicker>
-                        <Button Command="{Binding AddOrderCommand}" Margin="2,0,0,0" Width="17" Height="17" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Button.Template>
-                                <ControlTemplate>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Ellipse.Fill" TargetName="ell" Value="#0000FF"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                    <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType=Button, AncestorLevel=1}}" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource FindAncestor, AncestorType=Button, AncestorLevel=1}}">
-                                        <Ellipse Fill="#00BFFF" Name="ell"/>
-                                        <Path Name="path" Data="M0.5,0 L0.5,1 M0,0.5 L1,0.5"  StrokeThickness="2.5"  Stretch="Fill"     Stroke="#98FF98" />
-                                    </Grid>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                        <Button Command="{Binding ResetEntryCommand}" Margin="2,0,0,0" Width="17" Height="17">
-                            <Button.Template>
-                                <ControlTemplate>
-                                    <Path Name="delPath" Data="M7.1999998,0L16,8.7999997 24.799999,0 32,7.1999998 23.2,16 32,24.799999 24.799999,32 16,23.2 7.1999998,32 0,24.799999 8.7999997,16 0,7.1999998z"   Stretch="Uniform" Fill="Red"/>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Path.Stroke" TargetName="delPath" Value="#8B0000"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                        <Button Margin="2,0,0,0" Content="{Binding EntryToUpdate, Converter={StaticResource EntryToText}}"  Width="100" Command="{Binding NewEntryCommand}"/>
-                    </StackPanel>
-                    <ContentPresenter Content="{Binding NewOrderList}" ContentTemplate="{StaticResource OrdersTemplate}"/>
-                    <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Text="{Binding Comment, Mode=TwoWay}"/>
-                </StackPanel>
-            </Expander>
             <ListBox Name="MainBase" ItemsSource="{Binding Base}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <ItemContainerTemplate>
@@ -147,6 +158,7 @@
                                 </BooleanAnimationUsingKeyFrames>
                             </Storyboard>
                         </BeginStoryboard>
+                        <StopStoryboard BeginStoryboardName="OpenAdd"/>
                     </EventTrigger>
                 </ListBox.Triggers>
                 <i:Interaction.Triggers>

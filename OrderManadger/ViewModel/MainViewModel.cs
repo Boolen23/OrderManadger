@@ -16,13 +16,15 @@ namespace OrderManadger.ViewModel
     {
         public MainViewModel()
         {
+            FilterStatus = Status.All;
             LocalDataBase = new DataBase();
             LocalDataBase.DataUpdated += LocalDataBase_DataUpdated;
         }
 
         private void LocalDataBase_DataUpdated(object sender, EventArgs e)
         {
-            Base = LocalDataBase.GetEnries(Status.Make);
+            ResetEntry();
+            Base = LocalDataBase.GetEnries(FilterStatus);
         }
         #region Fields
         private DataBase LocalDataBase;
@@ -34,8 +36,6 @@ namespace OrderManadger.ViewModel
         public AsyncRelayCommand LoadCommand => _LoadCommand ?? (_LoadCommand = new AsyncRelayCommand(OnLoadData));
         private ICommand _addOrderCommand;
         public ICommand AddOrderCommand => _addOrderCommand ?? (_addOrderCommand = new RelayCommand(OnCreateOrderVM));
-        private ICommand _SaveCommand;
-        public ICommand SaveCommand => _SaveCommand ?? (_SaveCommand = new RelayCommand(OnSaveCommand));
         private ICommand _ResetEntryCommand;
         public ICommand ResetEntryCommand => _ResetEntryCommand ?? (_ResetEntryCommand = new RelayCommand(OnResetEntryCommand));
         private ICommand _UpdateEntryCommand;
@@ -44,6 +44,9 @@ namespace OrderManadger.ViewModel
         public ICommand DeleteEntryCommand => _DeleteEntryCommand ?? (_DeleteEntryCommand = new RelayCommand(OnDeleteEntryCommand));
         private ICommand _NewEntryCommand;
         public ICommand NewEntryCommand => _NewEntryCommand ?? (_NewEntryCommand = new RelayCommand(OnNewEntryAdded));
+        private ICommand _FilterStatusCommand;
+        public ICommand FilterStatusCommand => _FilterStatusCommand ?? (_FilterStatusCommand = new RelayCommand(OnFilterStatusChanged));
+
         #endregion
         #region Methods
         private void OnCreateOrderVM(object obj)
@@ -53,6 +56,7 @@ namespace OrderManadger.ViewModel
         private void OnNewEntryAdded(object o)
         {
             LocalDataBase.Add(CompileEntry, Sellers, Assortment, EntryToUpdate);
+            ResetEntry();
         }
         private Entry CompileEntry
         {
@@ -103,17 +107,15 @@ namespace OrderManadger.ViewModel
             Date = DateTime.Now;
         }
         private void OnResetEntryCommand(object entryObject) => ResetEntry();
-        private void OnSaveCommand(object entryObject) => SaveData();
-        private void SaveData() => Data.Save(Base, Sellers, Assortment);
-        private void UpdateBase()
+        private void OnFilterStatusChanged(object ob)
         {
-            Base = new ObservableCollection<Entry>(Base.OrderByDescending(i => i.Datetime));
-            SaveData();
+            ResetEntry();
+            Base = LocalDataBase.GetEnries(FilterStatus);
         }
         private async Task OnLoadData(CancellationToken ct)
         {
             await LocalDataBase.StartLoad();
-            Base = LocalDataBase.GetEnries(Status.Make);
+            Base = LocalDataBase.GetEnries(FilterStatus);
             Sellers = LocalDataBase.Sellers;
             Assortment = LocalDataBase.Assortment;
             ResetEntry();
@@ -180,6 +182,17 @@ namespace OrderManadger.ViewModel
                 OnPropertyChanged();
             }
         }
+        private Status _FilterStatus;
+        public Status FilterStatus
+        {
+            get => _FilterStatus;
+            set
+            {
+                _FilterStatus = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
     }
 }

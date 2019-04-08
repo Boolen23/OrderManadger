@@ -11,6 +11,8 @@ namespace OrderManadger.Model
     {
         public static ObservableCollection<Entry> Filtrate(this ObservableCollection<Entry> BaseCollection, Status stat)
         {
+            if (stat == Status.All)
+                return BaseCollection;
             return new ObservableCollection<Entry>(BaseCollection.Where(i => i.status == stat));
         }
 
