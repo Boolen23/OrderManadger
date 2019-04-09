@@ -33,7 +33,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Expander Grid.Row="0" Name="AddExpander" Header="Add" Background="Transparent">
+        <Expander Grid.Row="0" Name="AddExpander" Header="Add" Foreground="White" Background="Transparent">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <ComboBox Width="85" SelectedIndex="{Binding CurrentStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
@@ -91,11 +91,11 @@
                 <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" Text="{Binding Comment, Mode=TwoWay}"/>
             </StackPanel>
         </Expander>
-        <ComboBox Margin="80,0,0,0" Grid.Row="0" VerticalAlignment="Top" Width="120" Height="23" Background="Transparent" HorizontalAlignment="Left" SelectedIndex="{Binding FilterStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
+        <ComboBox Margin="80,0,0,0" Grid.Row="0" Foreground="DarkGray" VerticalAlignment="Top" Width="120" Height="23" Background="Transparent" HorizontalAlignment="Left" SelectedIndex="{Binding FilterStatus, Mode=TwoWay, Converter={StaticResource Adapter}}">
             <ComboBoxItem>Сделать</ComboBoxItem>
             <ComboBoxItem>В обработке</ComboBoxItem>
             <ComboBoxItem>Завершено</ComboBoxItem>
-            <ComboBoxItem>Все</ComboBoxItem>
+            <ComboBoxItem>Все заказы</ComboBoxItem>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding FilterStatusCommand}"/>
@@ -142,9 +142,9 @@
                     <ItemContainerTemplate>
                         <Border BorderBrush="DarkBlue" BorderThickness="1">
                           <StackPanel Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Background="{Binding status, Converter={StaticResource StatusToBrush}, Mode=OneWay}">
-                            <TextBlock Text="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Orders, Converter={StaticResource TextVisibility}}"/>
-                            <TextBlock Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Comment, Converter={StaticResource TextVisibility}}"/>
-                            <TextBlock Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Foreground="White" Text="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Orders, Converter={StaticResource TextVisibility}}"/>
+                            <TextBlock Foreground="White" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Comment, Converter={StaticResource TextVisibility}}"/>
+                            <TextBlock Foreground="White" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
                         </Border>
                     </ItemContainerTemplate>
