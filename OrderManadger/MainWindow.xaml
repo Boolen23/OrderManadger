@@ -182,9 +182,7 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-            <Viewbox Stretch="Fill">
-                <Image Source="{Binding RecivedImage, Mode=OneWayToSource}"/>
-            </Viewbox>
+            <Image Source="{Binding RecivedImage, Mode=OneWayToSource}" Height="120"/>
         </StackPanel>
     </Grid>
 </Window>
