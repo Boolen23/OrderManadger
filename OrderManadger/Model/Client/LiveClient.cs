@@ -34,15 +34,17 @@ namespace OrderManadger.Model.Client
                     resultSucsess = false;
                 }
             });
-            if (resultSucsess == false) StartConnect();
+            if (resultSucsess) StartRecive();
+            else StartConnect();
         }
-        private void StartRecive()
+        private async void StartRecive()
         {
             NetworkStream InputStream = Client.GetStream();
             BinaryReader reader = new BinaryReader(InputStream);
             while (true)
             {
-                Image = BitmapFrame.Create(InputStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+               Image = BitmapFrame.Create(InputStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+               await Task.Delay(500);
             }
         }
         private ImageSource Image
