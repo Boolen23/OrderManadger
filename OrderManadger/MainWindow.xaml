@@ -141,17 +141,17 @@
                 <ListBox.ItemTemplate>
                     <ItemContainerTemplate>
                         <Border BorderBrush="DarkBlue" BorderThickness="1">
-                          <StackPanel Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Background="{Binding status, Converter={StaticResource StatusToBrush}, Mode=OneWay}">
-                            <TextBlock Foreground="White" Text="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Orders, Converter={StaticResource TextVisibility}}"/>
-                            <TextBlock Foreground="White" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Comment, Converter={StaticResource TextVisibility}}"/>
-                            <TextBlock Foreground="White" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
-                        </StackPanel>
+                            <StackPanel Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Background="{Binding status, Converter={StaticResource StatusToBrush}, Mode=OneWay}">
+                                <TextBlock Foreground="White" Text="{Binding Orders, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Orders, Converter={StaticResource TextVisibility}}"/>
+                                <TextBlock Foreground="White" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Comment, Converter={StaticResource TextVisibility}}"/>
+                                <TextBlock Foreground="White" Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
                         </Border>
                     </ItemContainerTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.Triggers>
                     <EventTrigger RoutedEvent="ListBox.MouseDoubleClick">
-                          <BeginStoryboard Name="OpenAdd">
+                        <BeginStoryboard Name="OpenAdd">
                             <Storyboard>
                                 <BooleanAnimationUsingKeyFrames Storyboard.TargetName="AddExpander" Storyboard.TargetProperty="IsExpanded">
                                     <DiscreteBooleanKeyFrame Value="True"/>
@@ -182,7 +182,9 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-            <Image Source="{Binding RecivedImage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="120"/>
+            <Viewbox Stretch="Fill">
+                <Image Source="{Binding RecivedImage, Mode=OneWayToSource}"/>
+            </Viewbox>
         </StackPanel>
     </Grid>
 </Window>
