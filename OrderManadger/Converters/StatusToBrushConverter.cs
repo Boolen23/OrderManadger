@@ -17,9 +17,9 @@ namespace OrderManadger.Converters
             Status status = (Status)value;
             switch (status)
             {
-                case Status.Done:return Brushes.Gray;
-                case Status.Make:return Brushes.Goldenrod;
-                case Status.Processing:return Brushes.Green;
+                case Status.Done: return Brushes.Gray;
+                case Status.Make: return Brushes.Goldenrod;
+                case Status.Processing: return Brushes.Green;
             }
             return null;
         }
