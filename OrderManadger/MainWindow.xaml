@@ -172,6 +172,7 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
+            <Image Source="{Binding RecivedImage}"/>
         </StackPanel>
     </Grid>
 </Window>

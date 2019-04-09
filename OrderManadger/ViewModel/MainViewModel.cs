@@ -1,5 +1,6 @@
 ﻿using OrderManadger.Commands;
 using OrderManadger.Model;
+using OrderManadger.Model.Client;
 using OrderManadger.Model.DataBase;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OrderManadger.ViewModel
 {
@@ -16,10 +18,13 @@ namespace OrderManadger.ViewModel
     {
         public MainViewModel()
         {
+            client = new LiveClient();
+            client.NewFrameRecived += Client_NewFrameRecived;
             FilterStatus = Status.All;
             LocalDataBase = new DataBase();
             LocalDataBase.DataUpdated += LocalDataBase_DataUpdated;
         }
+
 
         private void LocalDataBase_DataUpdated(object sender, EventArgs e)
         {
@@ -27,6 +32,7 @@ namespace OrderManadger.ViewModel
             Base = LocalDataBase.GetEnries(FilterStatus);
         }
         #region Fields
+        private LiveClient client;
         private DataBase LocalDataBase;
         private List<string> Sellers;
         private List<string> Assortment;
@@ -193,6 +199,22 @@ namespace OrderManadger.ViewModel
             }
         }
 
+        #endregion
+        #region Socket
+        private ImageSource _RecivedImage;
+        public ImageSource RecivedImage
+        {
+            get => _RecivedImage;
+            set
+            {
+                _RecivedImage = value;
+                OnPropertyChanged();
+            }
+        }
+        private void Client_NewFrameRecived(object sender, RecivedFrameEventArgs e)
+        {
+            RecivedImage = e.src;
+        }
         #endregion
     }
 }
