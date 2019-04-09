@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace OrderManadger.ViewModel
 {
@@ -125,6 +126,7 @@ namespace OrderManadger.ViewModel
             Sellers = LocalDataBase.Sellers;
             Assortment = LocalDataBase.Assortment;
             ResetEntry();
+            client.StartConnect();
         }
         #endregion
         #region Properties
@@ -201,8 +203,8 @@ namespace OrderManadger.ViewModel
 
         #endregion
         #region Socket
-        private ImageSource _RecivedImage;
-        public ImageSource RecivedImage
+        private BitmapImage _RecivedImage;
+        public BitmapImage RecivedImage
         {
             get => _RecivedImage;
             set
@@ -213,7 +215,7 @@ namespace OrderManadger.ViewModel
         }
         private void Client_NewFrameRecived(object sender, RecivedFrameEventArgs e)
         {
-            RecivedImage = e.src;
+            RecivedImage = e.BitImg;
         }
         #endregion
     }

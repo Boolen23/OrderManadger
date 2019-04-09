@@ -182,7 +182,7 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-            <Image Source="{Binding RecivedImage}"/>
+            <Image Source="{Binding RecivedImage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="120"/>
         </StackPanel>
     </Grid>
 </Window>

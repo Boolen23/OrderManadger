@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -40,22 +42,33 @@ namespace OrderManadger.Model.Client
         private async void StartRecive()
         {
             NetworkStream InputStream = Client.GetStream();
-            BinaryReader reader = new BinaryReader(InputStream);
+            IFormatter formatter = new BinaryFormatter();
             while (true)
             {
-               Image = BitmapFrame.Create(InputStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-               await Task.Delay(500);
+               byte[] result  = (byte[])formatter.Deserialize(InputStream);
+                Image = ConvertByteArrayToBitmapImage(result);
+               await Task.Delay(100);
             }
         }
-        private ImageSource Image
+        private BitmapImage Image
         {
             set
             {
                 NewFrameRecived?.Invoke(null, new RecivedFrameEventArgs(value));
             }
         }
-        private IPAddress ipAddr = IPAddress.Parse("20.116.30.1");
+        private IPAddress ipAddr = IPAddress.Parse("192.168.0.50");
         private int port = 11720;
         TcpClient Client;
+        public static BitmapImage ConvertByteArrayToBitmapImage(byte[] bytes)
+        {
+            var stream = new MemoryStream(bytes);
+            stream.Seek(0, SeekOrigin.Begin);
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.StreamSource = stream;
+            image.EndInit();
+            return image;
+        }
     }
 }
