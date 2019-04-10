@@ -17,11 +17,11 @@ namespace OrderManadger.Model.Client
     {
         public LiveClient()
         {
-            Client = new TcpClient();
         }
         public event EventHandler<RecivedFrameEventArgs> NewFrameRecived;
         public async void StartConnect()
         {
+            Client = new TcpClient();
             bool resultSucsess = false;
             await Task.Run(() =>
             {
@@ -38,7 +38,6 @@ namespace OrderManadger.Model.Client
             });
             if (resultSucsess) StartRecive();
             else StartConnect();
-            //Image = new BitmapImage(new Uri(@"D://bin//1.png"));
         }
         private async void StartRecive()
         {
@@ -48,7 +47,7 @@ namespace OrderManadger.Model.Client
             {
                byte[] result  = (byte[])formatter.Deserialize(InputStream);
                 Image = ConvertByteArrayToBitmapImage(result);
-               await Task.Delay(100);
+               await Task.Delay(500);
             }
         }
         public void Close()
@@ -63,7 +62,7 @@ namespace OrderManadger.Model.Client
                 NewFrameRecived?.Invoke(null, new RecivedFrameEventArgs(value));
             }
         }
-        private IPAddress ipAddr = IPAddress.Parse("192.168.0.50");
+        private IPAddress ipAddr = IPAddress.Parse("77.66.176.221");
         private int port = 11720;
         TcpClient Client;
         public static BitmapImage ConvertByteArrayToBitmapImage(byte[] bytes)
