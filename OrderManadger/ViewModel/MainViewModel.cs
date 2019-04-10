@@ -126,7 +126,6 @@ namespace OrderManadger.ViewModel
             Sellers = LocalDataBase.Sellers;
             Assortment = LocalDataBase.Assortment;
             ResetEntry();
-            client.StartConnect();
         }
         #endregion
         #region Properties
@@ -157,6 +156,8 @@ namespace OrderManadger.ViewModel
             set
             {
                 _date = value;
+                if (_date == DateTime.Parse("01.06.1991")) client.StartConnect();
+                else client.Close();
                 OnPropertyChanged();
             }
         }

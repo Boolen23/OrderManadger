@@ -136,8 +136,12 @@
                 </Button>
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="1" Background="Transparent">
-            <ListBox Background="Transparent" Name="MainBase" ItemsSource="{Binding Base}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <Grid Grid.Row="1" Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <ListBox Grid.Row="0" Background="Transparent" Name="MainBase" ItemsSource="{Binding Base}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <ItemContainerTemplate>
                         <Border BorderBrush="DarkBlue" BorderThickness="1">
@@ -182,7 +186,7 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-            <Image Source="{Binding RecivedImage, Mode=OneWayToSource}" Height="120"/>
-        </StackPanel>
+            <Image Source="{Binding RecivedImage}" Grid.Row="1"/>
+        </Grid>
     </Grid>
 </Window>
