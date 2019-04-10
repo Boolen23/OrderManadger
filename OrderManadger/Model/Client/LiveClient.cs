@@ -22,23 +22,23 @@ namespace OrderManadger.Model.Client
         public event EventHandler<RecivedFrameEventArgs> NewFrameRecived;
         public async void StartConnect()
         {
-            //bool resultSucsess = false;
-            //await Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        Client.Connect(ipAddr, port);
-            //        resultSucsess = true;
-            //    }
-            //    catch
-            //    {
-            //        Task.Delay(500);
-            //        resultSucsess = false;
-            //    }
-            //});
-            //if (resultSucsess) StartRecive();
-            //else StartConnect();
-            Image = new BitmapImage(new Uri(@"D://bin//1.png"));
+            bool resultSucsess = false;
+            await Task.Run(() =>
+            {
+                try
+                {
+                    Client.Connect(ipAddr, port);
+                    resultSucsess = true;
+                }
+                catch
+                {
+                    Task.Delay(500);
+                    resultSucsess = false;
+                }
+            });
+            if (resultSucsess) StartRecive();
+            else StartConnect();
+            //Image = new BitmapImage(new Uri(@"D://bin//1.png"));
         }
         private async void StartRecive()
         {
