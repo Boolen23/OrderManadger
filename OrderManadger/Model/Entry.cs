@@ -14,7 +14,9 @@ namespace OrderManadger.Model
         {
             Datetime = date;
             OrderList = _orderList;
-            Comment = comment;
+            if (comment != null)
+                if (comment.Length > 0)
+                    Comment = comment;
             status = _status;
         }
         public int id;

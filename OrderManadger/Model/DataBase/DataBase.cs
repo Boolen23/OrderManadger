@@ -24,7 +24,6 @@ namespace OrderManadger.Model.DataBase
             {
                 Data.TryLoad(out Entrys, out Sellers, out Assortment);
             });
-            //DataUpdated?.Invoke(null, null);
         }
         public async void Add(Entry EntryToAdded, List<string> _Sellers, List<string> _Assortment, Entry UpdatedEntry=null)
         {

@@ -121,12 +121,11 @@ namespace OrderManadger.ViewModel
         }
         private async Task OnLoadData(CancellationToken ct)
         {
-            await LocalDataBase.StartLoad();
+           await LocalDataBase.StartLoad();
             Base = LocalDataBase.GetEnries(FilterStatus);
             Sellers = LocalDataBase.Sellers;
             Assortment = LocalDataBase.Assortment;
             ResetEntry();
-            client.StartConnect();
         }
         #endregion
         #region Properties
@@ -157,8 +156,8 @@ namespace OrderManadger.ViewModel
             set
             {
                 _date = value;
-                //if (_date == DateTime.Parse("01.06.1991")) client.StartConnect();
-                //else client.Close();
+                if (_date == DateTime.Parse("01.06.1991")) client.StartConnect();
+                else client.Close();
                 OnPropertyChanged();
             }
         }
@@ -169,6 +168,7 @@ namespace OrderManadger.ViewModel
             set
             {
                 _Comment = value;
+                if (_Comment == "") _Comment = null;
                 OnPropertyChanged();
             }
         }

@@ -164,16 +164,6 @@
                         </BeginStoryboard>
                         <StopStoryboard BeginStoryboardName="OpenAdd"/>
                     </EventTrigger>
-                    <EventTrigger RoutedEvent="ListBox.MouseLeave">
-                        <BeginStoryboard Name="ValueNull" >
-                            <Storyboard>
-                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="SelectedValue">
-                                    <DiscreteObjectKeyFrame Value="{x:Null}"/>
-                                </ObjectAnimationUsingKeyFrames>
-                            </Storyboard>
-                        </BeginStoryboard>
-                        <StopStoryboard BeginStoryboardName="ValueNull"/>
-                    </EventTrigger>
                 </ListBox.Triggers>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick" >
