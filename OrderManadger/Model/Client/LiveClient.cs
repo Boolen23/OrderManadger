@@ -35,20 +35,20 @@ namespace OrderManadger.Model.Client
             });
             if (resultSucsess)
             {
-                await Task.Delay(7000);
+                await Task.Delay(1000);
                 StartRecive();
             }
             else StartConnect();
         }
+        NetworkStream InputStream;
         private async void StartRecive()
         {
-            NetworkStream InputStream = Client.GetStream();
-            IFormatter formatter = new BinaryFormatter();
+            InputStream = Client.GetStream();
             try
             {
                 while (true)
                 {
-                    byte[] result = (byte[])formatter.Deserialize(InputStream);
+                    byte[] result = await ReciveAsync(InputStream);
                     Image = ConvertByteArrayToBitmapImage(result);
                     await Task.Delay(100);
                 }
@@ -58,10 +58,38 @@ namespace OrderManadger.Model.Client
                 Close();
             }
         }
-        public void Close()
+        private async Task<byte[]> ReciveAsync(NetworkStream str)
+        {
+            await Task.Run(() =>
+            {
+                while (Client.Connected)
+                {
+                    IFormatter f = new BinaryFormatter();
+                    try
+                    {
+                        object temp = f.Deserialize(str);
+                        return (byte[])temp;
+                    }
+                    catch(Exception ex)
+                    {
+                        Task.Delay(500);
+                        continue;
+                    }
+                }
+                return null;
+            });
+            return null;
+        }
+        public async void Close()
         {
             if (Client != null)
+            {
+                await Task.Delay(500);
+                InputStream.Flush();
+                InputStream.Close();
+                await Task.Delay(500);
                 Client.Close();
+            }
             Image = null;
         }
         private BitmapImage Image
