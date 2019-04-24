@@ -13,53 +13,55 @@ using System.Windows.Media.Imaging;
 
 namespace OrderManadger.Model.Client
 {
-   public class LiveClient
+    public class LiveClient
     {
-        public LiveClient()
-        {
-            Client = new TcpClient();
-        }
         public event EventHandler<RecivedFrameEventArgs> NewFrameRecived;
         public async void StartConnect()
         {
-            //bool resultSucsess = false;
-            //await Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        Client.Connect(ipAddr, port);
-            //        resultSucsess = true;
-            //    }
-            //    catch
-            //    {
-            //        Task.Delay(500);
-            //        resultSucsess = false;
-            //    }
-            //});
-            //if (resultSucsess) StartRecive();
-            //else StartConnect();
-            while (true)
+            Client = new TcpClient();
+            bool resultSucsess = false;
+            await Task.Run(() =>
             {
-                Image = FOO();
-                X++;
-                await Task.Delay(1);
+                try
+                {
+                    Client.Connect(ipAddr, port);
+                    resultSucsess = true;
+                }
+                catch
+                {
+                    Task.Delay(500);
+                    resultSucsess = false;
+                }
+            });
+            if (resultSucsess)
+            {
+                await Task.Delay(7000);
+                StartRecive();
             }
-           
+            else StartConnect();
         }
         private async void StartRecive()
         {
             NetworkStream InputStream = Client.GetStream();
             IFormatter formatter = new BinaryFormatter();
-            while (true)
+            try
             {
-               byte[] result  = (byte[])formatter.Deserialize(InputStream);
-                Image = ConvertByteArrayToBitmapImage(result);
-               await Task.Delay(100);
+                while (true)
+                {
+                    byte[] result = (byte[])formatter.Deserialize(InputStream);
+                    Image = ConvertByteArrayToBitmapImage(result);
+                    await Task.Delay(100);
+                }
+            }
+            catch
+            {
+                Close();
             }
         }
         public void Close()
         {
-            Client.Close();
+            if (Client != null)
+                Client.Close();
             Image = null;
         }
         private BitmapImage Image
@@ -69,7 +71,7 @@ namespace OrderManadger.Model.Client
                 NewFrameRecived?.Invoke(null, new RecivedFrameEventArgs(value));
             }
         }
-        private IPAddress ipAddr = IPAddress.Parse("192.168.0.50");
+        private IPAddress ipAddr = IPAddress.Parse("77.66.176.221");
         private int port = 11720;
         TcpClient Client;
         public BitmapImage ConvertByteArrayToBitmapImage(byte[] bytes)
@@ -82,41 +84,5 @@ namespace OrderManadger.Model.Client
             image.EndInit();
             return image;
         }
-        public BitmapImage FOO()
-        {
-            DrawingVisual draw = new DrawingVisual();
-            using(DrawingContext dc = draw.RenderOpen())
-            {
-                dc.DrawEllipse(Brushes.Red, new Pen(Brushes.Black, 1), new System.Windows.Point(X, 50), 20, 20);
-            }
-            RenderTargetBitmap rtb = new RenderTargetBitmap(200, 200, 96, 96, PixelFormats.Default);
-            rtb.Render(draw);
-            var bitmapImage = new BitmapImage();
-            var bitmapEncoder = new PngBitmapEncoder();
-            bitmapEncoder.Frames.Add(BitmapFrame.Create(rtb));
-
-            using (var stream = new MemoryStream())
-            {
-                bitmapEncoder.Save(stream);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = stream;
-                bitmapImage.EndInit();
-            }
-            return bitmapImage;
-        }
-        public int x;
-        public int X
-        {
-            get => x;
-            set
-            {
-                x = value;
-                if (x > 200) x = 0;
-            }
-        }
-        
     }
 }
