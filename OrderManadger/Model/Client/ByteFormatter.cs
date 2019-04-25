@@ -27,7 +27,7 @@ namespace OrderManadger.Model.Client
             serializationStream.Write(content, 0, content.Length);
         }
 
-        private byte[] ReceiveAll(this Socket socket)
+        private byte[] ReceiveAll(Socket socket)
         {
             var buffer = new List<byte>();
 
