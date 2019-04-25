@@ -11,7 +11,7 @@ namespace OrderManadger.Model.Client
 {
     public class ByteFormatter 
     {
-        public byte[] Deserialize(Stream serializationStream)
+        public byte[] Deserialize1(Stream serializationStream)
         {
             var bytes = new List<byte>();
 
@@ -44,9 +44,9 @@ namespace OrderManadger.Model.Client
 
             return buffer.ToArray();
         }
-        private byte[] ReadFully(Stream input)
+        public byte[] Deserialize2(Stream input)
         {
-            byte[] buffer = new byte[16 * 1024];
+            byte[] buffer = new byte[80 * 1024];
             using (MemoryStream ms = new MemoryStream())
             {
                 int read;
@@ -75,5 +75,23 @@ namespace OrderManadger.Model.Client
                 return temp;
             }
         }
+        public byte[] Deserialize(Stream inpt, TcpClient client)
+        {
+            List<byte> result = new List<byte>();
+            byte[] buffer;
+            int avl;
+            while ((avl = client.Available) > 0 || result.Count==0)
+            {
+                if (avl > 0)
+                {
+                    buffer = new byte[avl];
+                    inpt.Read(buffer, 0, avl);
+                    result.AddRange(buffer);
+                }
+                else Task.Delay(300);
+            }
+            return result.ToArray();
+        }
+
     }
 }

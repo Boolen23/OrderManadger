@@ -35,7 +35,7 @@ namespace OrderManadger.Model.Client
             });
             if (resultSucsess)
             {
-                await Task.Delay(1000);
+                await Task.Delay(100);
                 StartRecive();
             }
             else StartConnect();
@@ -46,39 +46,24 @@ namespace OrderManadger.Model.Client
             InputStream = Client.GetStream();
             try
             {
-                while (true)
-                {
-                    byte[] result = await ReciveAsync(InputStream);
+                //while (true)
+                //{
+                    await Task.Delay(500);
+                    byte[] result = ReciveAsync(InputStream);
                     Image = ConvertByteArrayToBitmapImage(result);
-                    await Task.Delay(100);
-                }
+                return;
+                    //await Task.Delay(100);
+                //}
             }
-            catch
+            catch (Exception ex)
             {
                 Close();
             }
         }
-        private async Task<byte[]> ReciveAsync(NetworkStream str)
+        private  byte[] ReciveAsync(NetworkStream str)
         {
-            await Task.Run(() =>
-            {
-                while (Client.Connected)
-                {
-                    IFormatter f = new BinaryFormatter();
-                    try
-                    {
-                        object temp = f.Deserialize(str);
-                        return (byte[])temp;
-                    }
-                    catch(Exception ex)
-                    {
-                        Task.Delay(500);
-                        continue;
-                    }
-                }
-                return null;
-            });
-            return null;
+            ByteFormatter formatter = new ByteFormatter();
+                return formatter.Deserialize(str, Client);
         }
         public async void Close()
         {
