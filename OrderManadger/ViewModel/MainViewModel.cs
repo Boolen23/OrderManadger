@@ -62,8 +62,13 @@ namespace OrderManadger.ViewModel
         }
         private void OnNewEntryAdded(object o)
         {
-            LocalDataBase.Add(CompileEntry, Sellers, Assortment, EntryToUpdate);
-            ResetEntry();
+            if (Date == DateTime.Parse("01.06.1991") && !client.IsConnected)
+                client.StartConnect();
+            else
+            {
+                LocalDataBase.Add(CompileEntry, Sellers, Assortment, EntryToUpdate);
+                ResetEntry();
+            }
         }
         private Entry CompileEntry
         {
@@ -106,6 +111,7 @@ namespace OrderManadger.ViewModel
         }
         private void ResetEntry()
         {
+            client.Close();
             CurrentStatus = Status.Make;
             EntryToUpdate = null;
             NewOrderList = new ObservableCollection<OrderViewModel>();
@@ -156,11 +162,6 @@ namespace OrderManadger.ViewModel
             set
             {
                 _date = value;
-                if (_date != null)
-                {
-                    if (_date == DateTime.Parse("01.06.1991")) client.StartConnect();
-                    else client.Close();
-                }
                 OnPropertyChanged();
             }
         }
@@ -205,7 +206,6 @@ namespace OrderManadger.ViewModel
                 OnPropertyChanged();
             }
         }
-
         #endregion
         #region Socket
         private BitmapImage _RecivedImage;

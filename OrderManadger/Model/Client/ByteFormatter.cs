@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrderManadger.Model.Client
 {
-    public class ByteFormatter 
+    public class ByteFormatter
     {
         public byte[] Deserialize1(Stream serializationStream)
         {
@@ -75,22 +75,33 @@ namespace OrderManadger.Model.Client
                 return temp;
             }
         }
-        public byte[] Deserialize(Stream inpt, TcpClient client)
+        public byte[] Deserialize(NetworkStream inpt, TcpClient client)
         {
             List<byte> result = new List<byte>();
             byte[] buffer;
             int avl;
-            while ((avl = client.Available) > 0 || result.Count==0)
+            while (Reciving(result))
             {
+                avl = client.Available;
                 if (avl > 0)
                 {
                     buffer = new byte[avl];
                     inpt.Read(buffer, 0, avl);
                     result.AddRange(buffer);
                 }
-                else Task.Delay(300);
+                else Task.Delay(30);
             }
             return result.ToArray();
+        }
+        private bool Reciving(List<byte> input)
+        {
+            if (input.Count < 3) return true;
+            byte i = input[input.Count - 2];
+            byte j = input[input.Count - 1];
+
+            if (i == 0 && j == 255)
+                return false;
+            else return true;
         }
 
     }
