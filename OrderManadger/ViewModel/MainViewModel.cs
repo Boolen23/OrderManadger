@@ -53,6 +53,9 @@ namespace OrderManadger.ViewModel
         public ICommand NewEntryCommand => _NewEntryCommand ?? (_NewEntryCommand = new RelayCommand(OnNewEntryAdded));
         private ICommand _FilterStatusCommand;
         public ICommand FilterStatusCommand => _FilterStatusCommand ?? (_FilterStatusCommand = new RelayCommand(OnFilterStatusChanged));
+        private ICommand _SetStatusCommand;
+        public ICommand SetStatusCommand => _SetStatusCommand ?? (_SetStatusCommand = new RelayCommand(OnSetStatusChanged));
+
 
         #endregion
         #region Methods
@@ -125,6 +128,12 @@ namespace OrderManadger.ViewModel
             ResetEntry();
             Base = LocalDataBase.GetEnries(FilterStatus);
         }
+        private void OnSetStatusChanged(object ob)
+        {
+            ParamsBox box = (ParamsBox)ob;
+            LocalDataBase.SetStatus(box.CurrentEntery, box.NewStatus);
+        }
+
         private async Task OnLoadData(CancellationToken ct)
         {
            await LocalDataBase.StartLoad();

@@ -7,13 +7,15 @@
         xmlns:conv="clr-namespace:OrderManadger.Converters"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:vm ="clr-namespace:OrderManadger.ViewModel"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="#D83232dc"
         Title="MainWindow" Height="520" Width="347.966"
         MouseDown="Window_MouseDown" MouseUp="Window_MouseUp" MouseMove="Window_MouseMove"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        >
     <Window.Resources>
         <ResourceDictionary Source="MainDictionary.xaml"/>
     </Window.Resources>
@@ -172,6 +174,33 @@
                 </i:Interaction.Triggers>
                 <ListBox.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Header="Статус">
+                            <MenuItem Header="Сделать" Command="{Binding SetStatusCommand}">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ParametersToParamsBox}">
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" Path="PlacementTarget.SelectedItem"/>
+                                        <Binding Source="{StaticResource Make}"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+                            <MenuItem Header="В обработке" Command="{Binding SetStatusCommand}">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ParametersToParamsBox}">
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" Path="PlacementTarget.SelectedItem"/>
+                                        <Binding Source="{StaticResource Processing}"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+                            <MenuItem Header="Завершено" Command="{Binding SetStatusCommand}">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ParametersToParamsBox}">
+                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" Path="PlacementTarget.SelectedItem"/>
+                                        <Binding Source="{StaticResource Done}"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+                        </MenuItem>
+                        <MenuItem Header="Редактировать запись" Command="{Binding UpdateEntryCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}, Path=PlacementTarget.SelectedItem}"/>
                         <MenuItem Header="Удалить запись" Command="{Binding DeleteEntryCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}, Path=PlacementTarget.SelectedItem}"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>

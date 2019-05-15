@@ -18,6 +18,17 @@ namespace OrderManadger.Model.DataBase
         public ObservableCollection<Entry> Entrys;
         public List<string> Sellers;
         public List<string> Assortment;
+        public async void SetStatus(Entry entry, Status NewStatus)
+        {
+            await Task.Run(() =>
+            {
+                foreach (Entry en in Entrys)
+                    if (en == entry)
+                        en.status = NewStatus;
+                Data.Save(Entrys, Sellers, Assortment);
+            });
+            DataUpdated?.Invoke(null, null);
+        }
         public async Task StartLoad()
         {
             await Task.Run(() =>
@@ -32,6 +43,8 @@ namespace OrderManadger.Model.DataBase
                 if (UpdatedEntry != null) Entrys.Remove(UpdatedEntry);
                 UpdatedEntry = null;
                 Entrys.Add(EntryToAdded);
+                Sellers = _Sellers;
+                Assortment = _Assortment;
                 Data.Save(Entrys, _Sellers, _Assortment);
             });
             DataUpdated?.Invoke(null, null);
