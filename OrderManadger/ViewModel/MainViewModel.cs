@@ -133,7 +133,6 @@ namespace OrderManadger.ViewModel
             ParamsBox box = (ParamsBox)ob;
             LocalDataBase.SetStatus(box.CurrentEntery, box.NewStatus);
         }
-
         private async Task OnLoadData(CancellationToken ct)
         {
            await LocalDataBase.StartLoad();
@@ -217,8 +216,8 @@ namespace OrderManadger.ViewModel
         }
         #endregion
         #region Socket
-        private BitmapImage _RecivedImage;
-        public BitmapImage RecivedImage
+        private byte[] _RecivedImage;
+        public byte[] RecivedImage
         {
             get => _RecivedImage;
             set

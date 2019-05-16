@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,6 +10,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -17,13 +20,13 @@ namespace OrderManadger.Model.Client
     {
         public LiveClient()
         {
-           // StartConnect();
         }
         public event EventHandler<RecivedFrameEventArgs> NewFrameRecived;
         public async void StartConnect()
         {
             Client = new TcpClient();
             bool resultSucsess = false;
+            CountDown();
             await Task.Run(() =>
             {
                 try
@@ -45,7 +48,44 @@ namespace OrderManadger.Model.Client
             }
             else StartConnect();
         }
+        private async void CountDown()
+        {
+            await Task.Run(() =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                while (true)
+                {
+                    Image = GetByteArrayFromText(sw.Elapsed.TotalSeconds.ToString());
+                    Task.Delay(300);
+                }
+            });
+        }
+        private byte[] GetByteArrayFromText(string txt)
+        {
+            var visual = new DrawingVisual();
+            using (DrawingContext drawingContext = visual.RenderOpen())
+            {
+                drawingContext.DrawText(
+                    new FormattedText(txt, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+                        new Typeface("Arial"), 12, Brushes.White), new Point(0, 0));
+            }
+            RenderTargetBitmap rtb = new RenderTargetBitmap(200, 100, 96, 96, PixelFormats.Pbgra32);
+            rtb.Render(visual);
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            encoder.QualityLevel = 100;
+            byte[] result;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                encoder.Frames.Add(BitmapFrame.Create(rtb));
+                encoder.Save(stream);
+                result = stream.ToArray();
+                stream.Close();
+            }
+            return result;
+        }
         NetworkStream InputStream;
+
         private async void StartRecive()
         {
             InputStream = Client.GetStream();
@@ -56,7 +96,8 @@ namespace OrderManadger.Model.Client
                 {
                     SendSyncByte(InputStream);
                     byte[] result = ReciveAsync(InputStream);
-                    Image = ConvertByteArrayToBitmapImage(result);
+                    //Image = ConvertByteArrayToBitmapImage(result);
+                    Image = result;
                     await Task.Delay(100);
                 }
             }
@@ -92,7 +133,7 @@ namespace OrderManadger.Model.Client
             Recive = false;
             Image = null;
         }
-        private BitmapImage Image
+        private byte[] Image
         {
             set
             {
@@ -110,6 +151,7 @@ namespace OrderManadger.Model.Client
                 else return Client.Connected;
             }
         }
+        #region Unused
         public BitmapImage ConvertByteArrayToBitmapImage(byte[] bytes)
         {
             var stream = new MemoryStream(bytes);
@@ -120,5 +162,6 @@ namespace OrderManadger.Model.Client
             image.EndInit();
             return image;
         }
+        #endregion
     }
 }
