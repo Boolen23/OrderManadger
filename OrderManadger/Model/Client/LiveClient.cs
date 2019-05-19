@@ -21,6 +21,8 @@ namespace OrderManadger.Model.Client
         public LiveClient()
         {
         }
+        private ClientState CurrentState;
+        #region Socket
         public event EventHandler<RecivedFrameEventArgs> NewFrameRecived;
         public async void StartConnect()
         {
@@ -43,49 +45,14 @@ namespace OrderManadger.Model.Client
             if (resultSucsess)
             {
                 await Task.Delay(100);
+                Connecting = false;
                 Recive = true;
                 StartRecive();
             }
-            else StartConnect();
+            else if (Connecting) StartConnect();
+            else CloseClient();
         }
-        private async void CountDown()
-        {
-            await Task.Run(() =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                while (true)
-                {
-                    Image = GetByteArrayFromText(sw.Elapsed.TotalSeconds.ToString());
-                    Task.Delay(300);
-                }
-            });
-        }
-        private byte[] GetByteArrayFromText(string txt)
-        {
-            var visual = new DrawingVisual();
-            using (DrawingContext drawingContext = visual.RenderOpen())
-            {
-                drawingContext.DrawText(
-                    new FormattedText(txt, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
-                        new Typeface("Arial"), 12, Brushes.White), new Point(0, 0));
-            }
-            RenderTargetBitmap rtb = new RenderTargetBitmap(200, 100, 96, 96, PixelFormats.Pbgra32);
-            rtb.Render(visual);
-            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-            encoder.QualityLevel = 100;
-            byte[] result;
-            using (MemoryStream stream = new MemoryStream())
-            {
-                encoder.Frames.Add(BitmapFrame.Create(rtb));
-                encoder.Save(stream);
-                result = stream.ToArray();
-                stream.Close();
-            }
-            return result;
-        }
-        NetworkStream InputStream;
-
+        private NetworkStream InputStream;
         private async void StartRecive()
         {
             InputStream = Client.GetStream();
@@ -109,9 +76,14 @@ namespace OrderManadger.Model.Client
             {
                 SendCloseByte(InputStream);
                 await Task.Delay(500);
-                Client.Close();
-                Client = null;
+                CloseClient();
             }
+        }
+        private void CloseClient()
+        {
+            Client.Close();
+            Client = null;
+            Image = null;
         }
         private void SendSyncByte(NetworkStream str)
         {
@@ -133,13 +105,6 @@ namespace OrderManadger.Model.Client
             Recive = false;
             Image = null;
         }
-        private byte[] Image
-        {
-            set
-            {
-                NewFrameRecived?.Invoke(null, new RecivedFrameEventArgs(value));
-            }
-        }
         private IPAddress ipAddr = IPAddress.Parse("77.66.176.221");
         private int port = 11720;
         TcpClient Client;
@@ -151,6 +116,51 @@ namespace OrderManadger.Model.Client
                 else return Client.Connected;
             }
         }
+        #endregion
+        #region ImageProcessing
+        private BitmapSource ImageFromText(string txt)
+        {
+            RenderTargetBitmap rtb = new RenderTargetBitmap(350, 300, 96, 96, PixelFormats.Pbgra32);
+            string text = "Установлние соединения... " + txt;
+            var visual = new DrawingVisual();
+            using (DrawingContext drawingContext = visual.RenderOpen())
+            {
+                drawingContext.DrawRectangle(Brushes.Transparent, new Pen(Brushes.White, 1), new Rect(0, 0, 350, 300));
+                drawingContext.DrawText(
+                    new FormattedText(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+                        new Typeface("Arial"), 15, Brushes.White), new Point(65, 140));
+                drawingContext.PushOpacity(1);
+            }
+            rtb.Render(visual);
+            rtb.Freeze();
+            return rtb;
+        }
+        private dynamic Image
+        {
+            set
+            {
+                NewFrameRecived?.Invoke(null, new RecivedFrameEventArgs(value));
+            }
+        }
+        private async void CountDown()
+        {
+            Connecting = true;
+            await Task.Run(() =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                while (Connecting)
+                {
+                    Image = ImageFromText(sw.Elapsed.Seconds.ToString());
+                    if (sw.Elapsed.Seconds > 5) Connecting = false;
+                    Task.Delay(300);
+                }
+                sw.Stop();
+            });
+        }
+        private bool Connecting = false;
+        #endregion
+
         #region Unused
         public BitmapImage ConvertByteArrayToBitmapImage(byte[] bytes)
         {

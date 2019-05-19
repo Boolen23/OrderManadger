@@ -10,10 +10,10 @@ namespace OrderManadger.Model.Client
 {
    public class RecivedFrameEventArgs:EventArgs
     {
-        public RecivedFrameEventArgs(byte[] bi)
+        public RecivedFrameEventArgs(dynamic bi)
         {
             BitImg = bi;
         }
-        public byte[] BitImg;
+        public dynamic BitImg;
     }
 }

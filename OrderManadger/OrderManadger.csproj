@@ -72,6 +72,7 @@
     <Compile Include="Converters\StatusToBrushConverter.cs" />
     <Compile Include="Converters\TextLenghtToVisibility.cs" />
     <Compile Include="Model\Client\ByteFormatter.cs" />
+    <Compile Include="Model\Client\ClientState.cs" />
     <Compile Include="Model\Client\LiveClient.cs" />
     <Compile Include="Model\Client\RecivedFrameEventArgs.cs" />
     <Compile Include="Model\Data.cs" />

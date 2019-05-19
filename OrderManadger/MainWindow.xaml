@@ -205,7 +205,7 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-            <Image Source="{Binding RecivedImage}" Grid.Row="1"/>
+                <Image Source="{Binding RecivedImage}" Grid.Row="1"/>
         </Grid>
     </Grid>
 </Window>

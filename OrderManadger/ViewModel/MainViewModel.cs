@@ -216,8 +216,8 @@ namespace OrderManadger.ViewModel
         }
         #endregion
         #region Socket
-        private byte[] _RecivedImage;
-        public byte[] RecivedImage
+        private dynamic _RecivedImage;
+        public dynamic RecivedImage
         {
             get => _RecivedImage;
             set
@@ -230,6 +230,7 @@ namespace OrderManadger.ViewModel
         {
             RecivedImage = e.BitImg;
         }
+
         #endregion
     }
 }
