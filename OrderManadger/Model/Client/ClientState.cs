@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace OrderManadger.Model.Client
 {
-    public enum ClientState { Connect, Recive, Close}
+    public enum ClientState {Null, Connect, Recive, Close}
 }

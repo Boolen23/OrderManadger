@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -20,37 +21,63 @@ namespace OrderManadger.Model.Client
     {
         public LiveClient()
         {
+            CurrentState = ClientState.Null;
         }
-        private ClientState CurrentState;
+        private ClientState _CurrentState;
+        private ClientState CurrentState
+        {
+            get => _CurrentState;
+            set => SetStateChanges(value);
+        }
+        private void SetStateChanges(ClientState newState)
+        {
+            if (newState == _CurrentState) return;
+            _CurrentState = newState;
+            switch (newState)
+            {
+                case ClientState.Connect:
+                    {
+                        Client = new TcpClient();
+                        StartConnection();
+                        break;
+                    }
+                case ClientState.Close:
+                    {
+                        CloseClient();
+                        break;
+                    }
+            }
+        }
         #region Socket
         public event EventHandler<RecivedFrameEventArgs> NewFrameRecived;
         public async void StartConnect()
         {
-            Client = new TcpClient();
-            bool resultSucsess = false;
-            CountDown();
-            await Task.Run(() =>
-            {
-                try
-                {
-                    Client.Connect(ipAddr, port);
-                    resultSucsess = true;
-                }
-                catch
-                {
-                    Task.Delay(500);
-                    resultSucsess = false;
-                }
-            });
-            if (resultSucsess)
-            {
-                await Task.Delay(100);
-                Connecting = false;
-                Recive = true;
-                StartRecive();
-            }
-            else if (Connecting) StartConnect();
-            else CloseClient();
+            CurrentState = ClientState.Connect;
+            //Client = new TcpClient();
+            //bool resultSucsess = false;
+            //CountDown();
+            //await Task.Run(() =>
+            //{
+            //    try
+            //    {
+            //        Client.Connect(ipAddr, port);
+            //        resultSucsess = true;
+            //    }
+            //    catch
+            //    {
+            //        Task.Delay(500);
+            //        resultSucsess = false;
+            //    }
+            //});
+            //if (resultSucsess)
+            //{
+            //    await Task.Delay(100);
+            //    Connecting = false;
+            //    Recive = true;
+            //    StartRecive();
+            //}
+            //else if (Connecting) StartConnect();
+            //else CloseClient();
         }
         private NetworkStream InputStream;
         private async void StartRecive()
@@ -81,8 +108,11 @@ namespace OrderManadger.Model.Client
         }
         private void CloseClient()
         {
-            Client.Close();
-            Client = null;
+            if (Client != null)
+            {
+                Client.Close();
+                Client = null;
+            }
             Image = null;
         }
         private void SendSyncByte(NetworkStream str)
@@ -142,36 +172,57 @@ namespace OrderManadger.Model.Client
                 NewFrameRecived?.Invoke(null, new RecivedFrameEventArgs(value));
             }
         }
-        private async void CountDown()
-        {
-            Connecting = true;
-            await Task.Run(() =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                while (Connecting)
-                {
-                    Image = ImageFromText(sw.Elapsed.Seconds.ToString());
-                    if (sw.Elapsed.Seconds > 5) Connecting = false;
-                    Task.Delay(300);
-                }
-                sw.Stop();
-            });
-        }
         private bool Connecting = false;
         #endregion
-
-        #region Unused
-        public BitmapImage ConvertByteArrayToBitmapImage(byte[] bytes)
+        CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+        public async void StartConnection()
         {
-            var stream = new MemoryStream(bytes);
-            stream.Seek(0, SeekOrigin.Begin);
-            var image = new BitmapImage();
-            image.BeginInit();
-            image.StreamSource = stream;
-            image.EndInit();
-            return image;
+            Task<bool> ConnectAsync = Task.Run(() => ConnectAsyncMethod());
+
+            Stopwatch sw = new Stopwatch(); sw.Start();
+            while (true)
+            {
+                timeConnection = sw.Elapsed;
+                if (ConnectAsync.IsCompleted)
+                {
+                    if (ConnectAsync.Result) CurrentState = ClientState.Recive;
+                    else
+                    {
+                        CurrentState = ClientState.Close;
+                        cancelTokenSource.Cancel();
+                        break;
+                    }
+                }
+                await Task.Delay(100);
+            }
+            sw.Stop();
         }
-        #endregion
+        private async Task<bool> ConnectAsyncMethod()
+        {
+            bool resultSucsess = false;
+            await Task.Run(() =>
+            {
+                try
+                {
+                    Client.Connect(ipAddr, port);
+                    resultSucsess = true;
+                }
+                catch
+                {
+                    resultSucsess = false;
+                }
+            });
+            return resultSucsess;
+        }
+        private TimeSpan _timeConnection;
+        private TimeSpan timeConnection
+        {
+            get => _timeConnection;
+            set
+            {
+                _timeConnection = value;
+                Image = ImageFromText(Math.Round(value.TotalSeconds, 1).ToString());
+            }
+        }
     }
 }
